@@ -1,0 +1,61 @@
+
+Loading the model ...
+  input file   : /home/eliranab/FDMAP/Resources/problems/BP-3x1_2A_1H_1L_TEAM_agent1.pomdpx
+  loading time : 0.01s 
+
+SARSOP initializing ...
+In sarsop::initialize
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.8.1
+0.8.2
+0.8.3
+0.8.4
+0.8.5
+0.8.6
+0.9
+0.10
+Finished sarsop::initialize
+1
+2
+3
+4
+5
+6
+  initialization time : 0.01s
+
+-------------------------------------------------------------------------------
+ Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs  
+-------------------------------------------------------------------------------
+ 0.01    0       0        0          1352.01    1352.01     14       1        
+ 0.02    2       57       1117.47    1337.49    220.023     39       21       
+ 0.02    4       100      1212.44    1334.84    122.403     66       38       
+ 0.02    7       155      1257.34    1327.18    69.8436     113      47       
+ 0.02    10      200      1285.67    1324.46    38.7893     148      53       
+ 0.03    13      245      1297.18    1321.94    24.7615     179      57       
+-------------------------------------------------------------------------------
+
+SARSOP finishing ...
+  target precision reached
+  target precision  : 30.000000
+  precision reached : 24.761498 
+
+-------------------------------------------------------------------------------
+ Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs  
+-------------------------------------------------------------------------------
+ 0.03    13      245      1297.18    1321.94    24.7615     179      57       
+-------------------------------------------------------------------------------
+
+Writing out policy ...
+  output file : /home/eliranab/FDMAP/Resources/policies/BP-3x1_2A_1H_1L_TEAM_agent1.policy
+
+Solve took 
+real	0m0.054s
+user	0m0.050s
+sys	0m0.004s

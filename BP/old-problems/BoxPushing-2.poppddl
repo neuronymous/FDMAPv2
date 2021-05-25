@@ -1,0 +1,88 @@
+(define 
+(domain BoxPushing-2)
+(:requirements :adl :probabilistic-effects :rewards)
+(:types POS AGENT BOX PUSH)
+(:constants
+	 p1-1 - pos
+	 p1-2 - pos
+	 p1-3 - pos
+	 p2-1 - pos
+	 p2-2 - pos
+	 p2-3 - pos
+	 p3-1 - pos
+	 p3-2 - pos
+	 p3-3 - pos
+
+	 b1 - box
+	 b2 - box
+
+	 a1 - agent
+	 a2 - agent
+)
+
+(:predicates
+	(adj ?i - pos ?j - pos)
+	(agent-at ?a - agent ?i - pos)
+	(box-at ?b - box ?i - pos)
+	(heavy ?b - box)
+	(same-agent ?a1 - agent ?a2 - agent)
+	(target-tile ?i - pos)
+)
+
+(:observations
+		(o_box-b1-at-p1-1)
+		(o_box-b1-at-p1-2)
+		(o_box-b1-at-p1-3)
+		(o_box-b1-at-p2-1)
+		(o_box-b1-at-p2-2)
+		(o_box-b1-at-p2-3)
+		(o_box-b1-at-p3-1)
+		(o_box-b1-at-p3-2)
+		(o_box-b1-at-p3-3)
+		(o_box-b2-at-p1-1)
+		(o_box-b2-at-p1-2)
+		(o_box-b2-at-p1-3)
+		(o_box-b2-at-p2-1)
+		(o_box-b2-at-p2-2)
+		(o_box-b2-at-p2-3)
+		(o_box-b2-at-p3-1)
+		(o_box-b2-at-p3-2)
+		(o_box-b2-at-p3-3)
+)
+
+(:action move
+	:parameters (?start - pos ?end - pos ?a - agent)
+	:effect (when ((and (adj ?start ?end) (agent-at ?a ?start))) (and
+		(probabilistic 1.0 (and (not (agent-at ?a ?start)) (agent-at ?a ?end)))
+		(decrease (reward) 1))
+	)
+)
+
+(:action sense
+    :parameters(?start - pos ?a - agent)
+    :effect(            (when (and (box-at b1 ?start) (o_box-b1-at-?end)))
+            (when (and (box-at b2 ?start) (o_box-b2-at-?end)))
+            (decrease (reward) 1)
+    )
+)
+
+(:action push
+	:parameters (?start - pos ?end - pos ?b - box ?a - agent)
+	:effect (when (and (adj ?start ?end) (agent-at ?a ?start) (box-at ?b ?start) (not (heavy ?b))) (and
+		(probabilistic 1.0 (and (not (box-at ?b ?start)) (box-at ?b ?end)))
+		(decrease (reward) 2)
+		(when (and (not (target-tile ?start)) (target-tile ?end) (box-at ?b ?end)) (increase (reward) 50)))
+	)
+)
+
+(:action joint-push
+	:parameters (?start - pos ?end - pos ?b - box ?a1 - agent ?a2 - agent)
+	:effect (when (and (adj ?start ?end) (agent-at ?a1 ?start) (agent-at ?a2 ?start) (box-at ?b ?start) (heavy ?b) (not (same-agent ?a1 ?a2)))
+    (and
+		(probabilistic 1.0 (and (not (box-at ?b ?start)) (box-at ?b ?end)))
+		(decrease (reward) 3)
+		(when (and (not (target-tile ?start)) (target-tile ?end) (box-at ?b ?end)) (increase (reward) 50)))
+	)
+)
+
+)

@@ -1,0 +1,27 @@
+input file   : /home/eliranab/FDMAP/Resources/problems/BP-2x2_2A_0H_3L_TEAM.pomdpx
+Use one-step look ahead
+discount : 0.99
+initialBeliefY : 
+size: 1024,
+ data: [384= 0.125, 387= 0.125, 396= 0.125, 399= 0.125, 432= 0.125, 435= 0.125, 444= 0.125, 447= 0.125]
+initialBeliefStval : 
+initialBeliefStval stval: 0
+size: 1024,
+ data: [384= 0.125, 387= 0.125, 396= 0.125, 399= 0.125, 432= 0.125, 435= 0.125, 444= 0.125, 447= 0.125]
+initialBeliefX : 
+1
+1 
+Num X States : 1
+Num Y States : 1024
+Num Action : 39
+Num Observations : 27
+X Trans : Object at 0xb492e0
+Y Trans : Object at 0xb4c8e0
+Obs Prob : Object at 0x12f20d0
+Rewards : Object at 0x12f1de0
+
+NOT In special case for initial X is a distribtion
+Graph generation took 
+real	0m1.304s
+user	0m1.244s
+sys	0m0.060s

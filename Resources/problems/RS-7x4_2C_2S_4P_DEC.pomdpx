@@ -1,0 +1,1234 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="RockSampling"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A rock sampling domain. 7x4 grid, 2 cars, 6 boxes,
+      Rocks positions are: [2, 25, 20, 7, 3, 24]
+      </Description>
+      <Discount> 0.99 </Discount>
+      <NumAgents> 2 </NumAgents>
+      <MetaData>
+         <PrivateRocksPositions> 2 25 20 7 </PrivateRocksPositions>
+         <SharedRocksPositions> 3 24 </SharedRocksPositions>
+         <ControlAreas>
+         <ControlArea>0 1 2 3 7 8 9 10 14 15 16 17 21 22 23 24</ControlArea>
+         <ControlArea>3 4 5 6 10 11 12 13 17 18 19 20 24 25 26 27</ControlArea>
+         </ControlAreas>
+      </MetaData>
+      <Variable>
+         <StateVar vnamePrev="car1_0" vnameCurr="car1_1" fullyObs="false">
+            <ValueEnum> 0 1 2 3 7 8 9 10 14 15 16 17 21 22 23 24 </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="car2_0" vnameCurr="car2_1" fullyObs="false">
+            <ValueEnum> 3 4 5 6 10 11 12 13 17 18 19 20 24 25 26 27 </ValueEnum>
+         </StateVar>
+
+         <StateVar vnamePrev="rock1_0" vnameCurr="rock1_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="rock2_0" vnameCurr="rock2_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="rock3_0" vnameCurr="rock3_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="rock4_0" vnameCurr="rock4_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="rock5_0" vnameCurr="rock5_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="rock6_0" vnameCurr="rock6_1" fullyObs="false">
+            <ValueEnum> good bad </ValueEnum>
+         </StateVar>
+
+         <ObsVar vname="obs_rock1_car1">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock2_car2">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock3_car2">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock4_car1">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock5_car1">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock5_car2">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock6_car1">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_rock6_car2">
+            <ValueEnum> good bad null </ValueEnum>
+         </ObsVar>
+
+         <ActionVar vname="main_action_var">
+            <ValueEnum> action_move_left_car1 action_move_right_car1 action_move_up_car1 action_move_down_car1 action_psample_car1 action_ssample_car1 action_sense_rock1_car1 action_sense_rock4_car1 action_sense_rock5_car1 action_sense_rock6_car1 action_move_left_car2 action_move_right_car2 action_move_up_car2 action_move_down_car2 action_psample_car2 action_ssample_car2 action_sense_rock2_car2 action_sense_rock3_car2 action_sense_rock5_car2 action_sense_rock6_car2 action_idle </ValueEnum>
+         </ActionVar>
+
+         <RewardVar vname="cost_car1" />
+         <RewardVar vname="cost_car2" />
+
+         <RewardVar vname="reward_rocks_car1" />
+         <RewardVar vname="reward_rocks_car2" />
+
+         <RewardVar vname="penalty_rock1_car1" />
+         <RewardVar vname="penalty_rock4_car1" />
+         <RewardVar vname="penalty_rock5_car1" />
+         <RewardVar vname="penalty_rock6_car1" />
+         <RewardVar vname="penalty_rock2_car2" />
+         <RewardVar vname="penalty_rock3_car2" />
+         <RewardVar vname="penalty_rock5_car2" />
+         <RewardVar vname="penalty_rock6_car2" />
+
+      </Variable>
+
+      <InitialStateBelief>
+
+         <CondProb>
+            <Var>car1_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>0</Instance>
+                    <ProbTable>1.0</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>car2_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>27</Instance>
+                    <ProbTable>1.0</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+         <CondProb>
+            <Var>rock1_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock2_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock3_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock4_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock5_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock6_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>good</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>bad</Instance>
+                    <ProbTable>0.5</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         <CondProb>
+            <Var>car1_1</Var>
+            <Parent>main_action_var car1_0</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_left_car1 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_right_car1 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_up_car1 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_down_car1 - - </Instance>
+                     <ProbTable>
+                     0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>car2_1</Var>
+            <Parent>main_action_var car2_0</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_left_car2 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_right_car2 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_up_car2 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_down_car2 - - </Instance>
+                     <ProbTable>
+                     0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00
+0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+
+         <CondProb>
+            <Var>rock1_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock1_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_psample_car1 2 * - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock2_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock2_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_psample_car2 * 25 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock3_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock3_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_psample_car2 * 20 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock4_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock4_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_psample_car1 7 * - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock5_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock5_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_ssample_car1 3 * - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_ssample_car2 * 3 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>rock6_1</Var>
+            <Parent>main_action_var car1_0  car2_0 rock6_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_ssample_car1 24 * - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_ssample_car2 * 24 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00
+0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         <CondProb>
+            <Var>obs_rock1_car1</Var>
+            <Parent>main_action_var rock1_1 car1_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock1_car1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock1_car1 good - - </Instance>
+                  <ProbTable> 0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+0.63	0.37	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.57	0.43	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.51	0.49	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock1_car1 bad - - </Instance>
+                  <ProbTable> 0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+0.37	0.63	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.43	0.57	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.49	0.51	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock4_car1</Var>
+            <Parent>main_action_var rock4_1 car1_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock4_car1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock4_car1 good - - </Instance>
+                  <ProbTable> 0.47	0.53	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.48	0.52	0.00
+0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+0.47	0.53	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock4_car1 bad - - </Instance>
+                  <ProbTable> 0.53	0.47	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.52	0.48	0.00
+0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+0.53	0.47	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock5_car1</Var>
+            <Parent>main_action_var rock5_1 car1_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car1 good - - </Instance>
+                  <ProbTable> 0.48	0.52	0.00
+0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+0.47	0.53	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.46	0.54	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car1 bad - - </Instance>
+                  <ProbTable> 0.52	0.48	0.00
+0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+0.53	0.47	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.54	0.46	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock6_car1</Var>
+            <Parent>main_action_var rock6_1 car1_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car1 good - - </Instance>
+                  <ProbTable> 0.46	0.54	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.47	0.53	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.48	0.52	0.00
+0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car1 bad - - </Instance>
+                  <ProbTable> 0.54	0.46	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.53	0.47	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.52	0.48	0.00
+0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock2_car2</Var>
+            <Parent>main_action_var rock2_1 car2_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock2_car2 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock2_car2 good - - </Instance>
+                  <ProbTable> 0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.51	0.49	0.00
+0.48	0.52	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.57	0.43	0.00
+0.51	0.49	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+0.63	0.37	0.00
+0.52	0.48	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock2_car2 bad - - </Instance>
+                  <ProbTable> 0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.49	0.51	0.00
+0.52	0.48	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.43	0.57	0.00
+0.49	0.51	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+0.37	0.63	0.00
+0.48	0.52	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock3_car2</Var>
+            <Parent>main_action_var rock3_1 car2_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock3_car2 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock3_car2 good - - </Instance>
+                  <ProbTable> 0.47	0.53	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.51	0.49	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.57	0.43	0.00
+0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+0.63	0.37	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock3_car2 bad - - </Instance>
+                  <ProbTable> 0.53	0.47	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.49	0.51	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.43	0.57	0.00
+0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+0.37	0.63	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock5_car2</Var>
+            <Parent>main_action_var rock5_1 car2_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car2 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car2 good - - </Instance>
+                  <ProbTable> 0.90	0.10	0.00
+0.63	0.37	0.00
+0.52	0.48	0.00
+0.48	0.52	0.00
+0.63	0.37	0.00
+0.57	0.43	0.00
+0.51	0.49	0.00
+0.47	0.53	0.00
+0.52	0.48	0.00
+0.51	0.49	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.46	0.54	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock5_car2 bad - - </Instance>
+                  <ProbTable> 0.10	0.90	0.00
+0.37	0.63	0.00
+0.48	0.52	0.00
+0.52	0.48	0.00
+0.37	0.63	0.00
+0.43	0.57	0.00
+0.49	0.51	0.00
+0.53	0.47	0.00
+0.48	0.52	0.00
+0.49	0.51	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.54	0.46	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>obs_rock6_car2</Var>
+            <Parent>main_action_var rock6_1 car2_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car2 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car2 good - - </Instance>
+                  <ProbTable> 0.46	0.54	0.00
+0.47	0.53	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.47	0.53	0.00
+0.48	0.52	0.00
+0.51	0.49	0.00
+0.52	0.48	0.00
+0.47	0.53	0.00
+0.51	0.49	0.00
+0.57	0.43	0.00
+0.63	0.37	0.00
+0.48	0.52	0.00
+0.52	0.48	0.00
+0.63	0.37	0.00
+0.90	0.10	0.00
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_rock6_car2 bad - - </Instance>
+                  <ProbTable> 0.54	0.46	0.00
+0.53	0.47	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.53	0.47	0.00
+0.52	0.48	0.00
+0.49	0.51	0.00
+0.48	0.52	0.00
+0.53	0.47	0.00
+0.49	0.51	0.00
+0.43	0.57	0.00
+0.37	0.63	0.00
+0.52	0.48	0.00
+0.48	0.52	0.00
+0.37	0.63	0.00
+0.10	0.90	0.00
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+      </ObsFunction>
+
+      <RewardFunction>
+         <Func>
+            <Var> cost_car1 </Var>
+            <Parent> main_action_var </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_idle </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car1 </Instance>
+                  <ValueTable> -0.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car1 </Instance>
+                  <ValueTable> -0.5 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_left_car1 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_right_car1 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_up_car1 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_down_car1 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock1_car1</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock4_car1</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock5_car1</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock6_car1</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+             </Parameter>
+         </Func>
+         <Func>
+            <Var> cost_car2 </Var>
+            <Parent> main_action_var </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_idle </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car2 </Instance>
+                  <ValueTable> -0.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car2 </Instance>
+                  <ValueTable> -0.5 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_left_car2 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_right_car2 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_up_car2 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_move_down_car2 </Instance>
+                     <ValueTable> -5.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock2_car2</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock3_car2</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock5_car2</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+               <Entry>
+                     <Instance>action_sense_rock6_car2</Instance>
+                     <ValueTable> -1.0 </ValueTable>
+               </Entry>
+             </Parameter>
+         </Func>
+
+         <Func>
+            <Var> penalty_rock1_car1 </Var>
+            <Parent> main_action_var car1_0 rock1_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car1 2 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock4_car1 </Var>
+            <Parent> main_action_var car1_0 rock4_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car1 7 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock5_car1 </Var>
+            <Parent> main_action_var car1_0 rock5_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car1 3 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock6_car1 </Var>
+            <Parent> main_action_var car1_0 rock6_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car1 24 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock2_car2 </Var>
+            <Parent> main_action_var car2_0 rock2_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car2 25 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock3_car2 </Var>
+            <Parent> main_action_var car2_0 rock3_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_psample_car2 20 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock5_car2 </Var>
+            <Parent> main_action_var car2_0 rock5_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car2 3 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> penalty_rock6_car2 </Var>
+            <Parent> main_action_var car2_0 rock6_0 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_ssample_car2 24 bad </Instance>
+                  <ValueTable>-500</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+
+
+         <Func>
+            None
+            None
+            None
+            None
+            <Var> reward_rocks_car1 </Var>
+            <Parent> rock1_0 rock4_0 rock5_0 rock6_0 rock1_1 rock4_1 rock5_1 rock6_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * * * * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> good * * * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * good * * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * * good * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * * * good bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            None
+            None
+            None
+            None
+            <Var> reward_rocks_car2 </Var>
+            <Parent> rock2_0 rock3_0 rock5_0 rock6_0 rock2_1 rock3_1 rock5_1 rock6_1</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * * * * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> good * * * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * good * * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * * good * bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> * * * good bad bad bad bad </Instance>
+                  <ValueTable> 750 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+      </RewardFunction>
+</pomdpx>

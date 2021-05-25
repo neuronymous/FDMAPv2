@@ -1,0 +1,6 @@
+input file   : /home/eliranab/FDMAP/Resources/problems/RS-7x4_2C_2S_6P_TEAM.pomdpx
+Graph generation took ERROR: couldn't open /home/eliranab/FDMAP/Resources/policies/RS-7x4_2C_2S_6P_TEAM.policy for reading 
+
+real	0m43.546s
+user	0m42.649s
+sys	0m0.872s

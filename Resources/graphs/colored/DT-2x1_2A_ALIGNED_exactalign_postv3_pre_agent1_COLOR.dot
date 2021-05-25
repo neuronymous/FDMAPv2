@@ -1,0 +1,34 @@
+digraph "G" {
+root [color=black, fillcolor=coral, label="Y (0,1,0) 0.5\lA (listen_agent1)\l", labeljust="l", shape=doublecircle, style=filled];
+x0row11 [color=black, fillcolor=coral, label="Y (1,1,1) 0.85\lA (listen_agent1)\l", style=filled];
+x0row13 [color=black, fillcolor=coral, label="Y (1,1,1) 0.97\lA (move_left_agent1)\l", style=filled];
+x0row17 [color=black, fillcolor=cadetblue1, label="Y (0,0,1) 0.97\lA (copen_agent1_agent2)\l", style=filled];
+x0row6 [color=black, fillcolor=cadetblue1, label="Y (1,1,0) 0.85\lA (copen_agent1_agent2)\l", style=filled];
+x0row5 [color=black, fillcolor=coral, label="Y (0,0,0) 0.85\lA (move_right_agent1)\l", style=filled];
+x0row2 [color=black, fillcolor=coral, label="Y (1,1,0) 0.5\lA (listen_agent1)\l", style=filled];
+x0row3 [color=black, fillcolor=coral, label="Y (0,1,0) 0.85\lA (move_right_agent1)\l", style=filled];
+x0row1 [color=black, fillcolor=coral, label="Y (0,0,0) 0.5\lA (listen_agent1)\l", style=filled];
+x0row19 [color=black, fillcolor=cadetblue1, label="Y (0,0,1) 0.85\lA (copen_agent1_agent2)\l", style=filled];
+x0row19_noop_0 [label="Y (0,0,1) 0.85\lA (idle)\l"];
+x0row17_noop_0 [label="Y (0,0,1) 0.97\lA (idle)\l"];
+x0row17_noop_1 [label="Y (0,0,1) 0.97\lA (idle)\l"];
+x0row17_noop_2 [label="Y (0,0,1) 0.97\lA (idle)\l"];
+root -> x0row3  [key=0, label="o (yes) 0.5\l"];
+root -> x0row19_noop_0  [key=0, label="o (no) 0.5\l"];
+x0row11 -> x0row13  [key=0, label="o (yes) 0.745\l"];
+x0row11 -> x0row2  [key=0, label="o (no) 0.255\l"];
+x0row13 -> x0row17_noop_0  [key=0, label="o (null) 1\l"];
+x0row17 -> x0row1  [key=0, label="o (null) 1\l"];
+x0row6 -> x0row2  [key=0, label="o (null) 1\l"];
+x0row5 -> x0row6  [key=0, label="o (null) 1\l"];
+x0row2 -> x0row11  [key=0, label="o (yes) 0.5\l"];
+x0row2 -> x0row6  [key=0, label="o (no) 0.5\l"];
+x0row3 -> x0row6  [key=0, label="o (null) 1\l"];
+x0row1 -> x0row5  [key=0, label="o (yes) 0.5\l"];
+x0row1 -> x0row19  [key=0, label="o (no) 0.5\l"];
+x0row19 -> x0row1  [key=0, label="o (null) 1\l"];
+x0row19_noop_0 -> x0row19  [key=0, label="o (null) 1\l"];
+x0row17_noop_0 -> x0row17_noop_1  [key=0, label="o (null) 1\l"];
+x0row17_noop_1 -> x0row17_noop_2  [key=0, label="o (null) 1\l"];
+x0row17_noop_2 -> x0row17  [key=0, label="o (null) 1\l"];
+}

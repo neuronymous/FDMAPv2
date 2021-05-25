@@ -1,0 +1,32 @@
+
+Loading the model ...
+  input file   : /home/eliranab/FDMAP/Resources/problems/RS-7x4_2C_2S_4P_TEAM_car2.pomdpx
+
+Loading the policy ...
+  input file   : /home/eliranab/FDMAP/Resources/policies/RS-7x4_2C_2S_4P_TEAM_car2.policy
+
+Simulating ...
+  action selection :  one-step look ahead
+
+-----------------------------------
+ #Simulations  | Exp Total Reward  
+-----------------------------------
+ 10              1413.79
+ 20              1116.34
+ 30              1000.97
+ 40              1088.87
+ 50              1075.43
+ 60              1098.56
+ 70              1125.4
+ 80              1139.13
+ 90              1127.23
+ 100             1093.53
+-----------------------------------
+
+Finishing ...
+
+-------------------------------------------------------------
+ #Simulations  | Exp Total Reward | 95% Confidence Interval 
+-------------------------------------------------------------
+ 100             1093.53            (949.291, 1237.76)
+-------------------------------------------------------------

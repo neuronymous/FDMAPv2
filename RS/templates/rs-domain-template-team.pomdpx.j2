@@ -1,0 +1,308 @@
+{% set NUM_TILES = WIDTH*HEIGHT %}
+{% set ACTION_LIST = calculate_action_list(CONTROL_AREAS, ROCKS_POSITIONS) %}
+{% set POS_VALUES = range(0,NUM_TILES) %}
+{% set TILES_LIST = calculate_all_tiles(WIDTH, HEIGHT) %}
+{% set NEIGHBORS_DICT = calculate_neighbors_dict(WIDTH, HEIGHT) %}
+{% set DIRECTION_MATRICES = calculate_direction_matrices((WIDTH/2 +1)|int, HEIGHT, PROB_MOVE) %}
+{% set POMDPXMARKS = pomdpx_constants %}
+{% set RSCONSTANTS = rocksamping_constants %}
+{% set SAMPLE_MATRIX = calculate_sample_matrix(PROB_SAMPLE) %}
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="RockSampling"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A rock sampling domain. {{WIDTH}}x{{HEIGHT}} grid, {{NUM_CARS}} cars, {{NUM_ROCKS}} boxes,
+      Rocks positions are: {{ROCKS_POSITIONS}}
+      </Description>
+      <Discount> {{DISCOUNT}} </Discount>
+      <NumAgents> {{NUM_CARS}} </NumAgents>
+      <MetaData>
+         <PrivateRocksPositions> {{ PRIVATE_ROCKS_POSITIONS|join(' ') }} </PrivateRocksPositions>
+         <SharedRocksPositions> {{ SHARED_ROCKS_POSITIONS|join(' ') }} </SharedRocksPositions>
+         <ControlAreas>
+         {% for control_area in CONTROL_AREAS %}
+         <ControlArea>{{ control_area|join(' ') }}</ControlArea>
+         {% endfor %}
+         </ControlAreas>
+      </MetaData>
+      <Variable>
+         {% for i in range(NUM_CARS) %}
+         <StateVar vnamePrev="{{ time_zero(CARS_SYMBOLS[i]) }}" vnameCurr="{{ time_one(CARS_SYMBOLS[i]) }}" fullyObs="false">
+            <ValueEnum> {{ CONTROL_AREAS[i]|join(' ') }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         {% for i in range(NUM_ROCKS) %}
+         <StateVar vnamePrev="{{ time_zero(ROCKS_SYMBOLS[i]) }}" vnameCurr="{{ time_one(ROCKS_SYMBOLS[i]) }}" fullyObs="false">
+            <ValueEnum> {{ RSCONSTANTS.ROCK_QUALITY_SYMBOLS|join(' ') }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         {% for i in range(NUM_ROCKS) %}
+         {% for j in range(NUM_CARS) %}
+         {% if ROCKS_POSITIONS[i] in CONTROL_AREAS[j] %}
+         <ObsVar vname="{{ RSCONSTANTS.obs_symbol(i, j) }}">
+            <ValueEnum> {{ RSCONSTANTS.ROCK_OBSERVATION_SYMBOLS|join(' ') }} </ValueEnum>
+         </ObsVar>
+         {% endif %}
+         {% endfor %}
+         {% endfor %}
+
+         <ActionVar vname="{{ RSCONSTANTS.action_var() }}">
+            <ValueEnum> {{ ACTION_LIST|join(' ') }} </ValueEnum>
+         </ActionVar>
+
+         {% for i in range(NUM_CARS) %}
+         <RewardVar vname="{{ RSCONSTANTS.car_cost_var(i) }}" />
+         {% endfor %}
+
+         {% for i in range(NUM_CARS) %}
+         <RewardVar vname="{{ RSCONSTANTS.rock_rewards_var(i) }}" />
+         {% endfor %}
+
+         {% for i in range(NUM_CARS) %}
+         {% for j in range(NUM_ROCKS) %}
+         {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+         {% if rock_tile_idx in CONTROL_AREAS[i] %}
+         <RewardVar vname="{{ RSCONSTANTS.rock_penalties_var(j, i) }}" />
+         {% endif %}
+         {% endfor %}
+         {% endfor %}
+
+      </Variable>
+
+      <InitialStateBelief>
+
+         {% for i in range(NUM_CARS) %}
+         <CondProb>
+            <Var>{{ time_zero(CARS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ POMDPXMARKS.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                {% for tile_idx, prob in CARS_POSITIONS[i].items() %}
+                <Entry>
+                    <Instance>{{ tile_idx }}</Instance>
+                    <ProbTable>{{ prob }}</ProbTable>
+                </Entry>
+                {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         {% for i in range(NUM_ROCKS) %}
+         <CondProb>
+            <Var>{{ time_zero(ROCKS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ POMDPXMARKS.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                {% set prob = ROCKS_GOOD_PROBS[i] %}
+                <Entry>
+                    <Instance>{{ RSCONSTANTS.good_quality() }}</Instance>
+                    <ProbTable>{{ prob|round(3) }}</ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance>{{ RSCONSTANTS.bad_quality() }}</Instance>
+                    <ProbTable>{{ (1.0 - prob)|round(3) }}</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         {% for i in range(NUM_CARS) %}
+         <CondProb>
+            <Var>{{ time_one(CARS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ RSCONSTANTS.action_var() }} {{ time_zero(CARS_SYMBOLS[i]) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               {% for direction_symbol in RSCONSTANTS.DIRECTION_SYMBOLS %}
+               <Entry>
+                     <Instance> {{RSCONSTANTS.move_action(direction_symbol, i)}} - - </Instance>
+                     <ProbTable>
+                     {{ matrix_to_string(DIRECTION_MATRICES[direction_symbol]) }}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         {% for i in range(NUM_ROCKS) %}
+         {% set rock_tile_idx = ROCKS_POSITIONS[i] %}
+         <CondProb>
+            <Var>{{ time_one(ROCKS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ RSCONSTANTS.action_var() }}{% for j in range(NUM_CARS) %} {{ time_zero(CARS_SYMBOLS[j]) }} {% endfor -%}{{ time_zero(ROCKS_SYMBOLS[i]) }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     {% set cars_any_pos = create_combination_template(NUM_CARS) %}
+                     <Instance> * {{ cars_any_pos }} - - </Instance>
+                     <ProbTable> identity </ProbTable>
+               </Entry>
+               {% for j in range(NUM_CARS) %}
+               {% if rock_tile_idx in CONTROL_AREAS[j] %}
+               {% set combination_template = create_combination_template(NUM_CARS, j) %}
+               {% set position_prefix = cast_to_template(combination_template, (rock_tile_idx|string)) %}
+               {% if rock_tile_idx in SHARED_ROCKS_POSITIONS %}
+               {% set cur_action = RSCONSTANTS.shared_sample_action(j) %}
+               {% else %}
+               {% set cur_action = RSCONSTANTS.private_sample_action(j) %}
+               {% endif %}
+               <Entry>
+                     <Instance> {{cur_action}} {{position_prefix}} - - </Instance>
+                     <ProbTable>
+                     {{ matrix_to_string(SAMPLE_MATRIX) }}
+                     </ProbTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         {% for i in range(NUM_CARS) %}
+         {% for j in range(NUM_ROCKS) %}
+         {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+         {% if rock_tile_idx in CONTROL_AREAS[i] %}
+         <CondProb>
+            <Var>{{RSCONSTANTS.obs_symbol(j, i)}}</Var>
+            <Parent>{{ RSCONSTANTS.action_var() }} {{ time_one(ROCKS_SYMBOLS[j]) }} {{ time_one(CARS_SYMBOLS[i]) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * {{ RSCONSTANTS.NULL_OBS }}</Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               {% set curr_sense_action = RSCONSTANTS.sense_action(j, i) %}
+               <Entry>
+                  <Instance> {{ curr_sense_action }} * * {{ RSCONSTANTS.NULL_OBS }} </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               {% set good_and_bad_sense_matrices = calculate_rock_sense_matrices((WIDTH/2+1)|int, HEIGHT, i, rock_tile_idx, SENSE_DECAY_CONST, PROB_SENSE) %}
+               {% set good_sense_probs_matrix = good_and_bad_sense_matrices[RSCONSTANTS.good_quality()]%}
+               {% set bad_sense_probs_matrix = good_and_bad_sense_matrices[RSCONSTANTS.bad_quality()]%}
+               <Entry>
+                  <Instance> {{ curr_sense_action }} {{ RSCONSTANTS.good_quality() }} - - </Instance>
+                  <ProbTable> {{ matrix_to_string(good_sense_probs_matrix) }}
+                  </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ curr_sense_action }} {{ RSCONSTANTS.bad_quality() }} - - </Instance>
+                  <ProbTable> {{ matrix_to_string(bad_sense_probs_matrix) }}
+                  </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         {% endif %}
+         {% endfor %}
+         {% endfor %}
+      </ObsFunction>
+
+      <RewardFunction>
+         {% for i in range(NUM_CARS) %}
+         {% set cur_car_bias = CARS_BIAS[i] %}
+         <Func>
+            <Var> {{ RSCONSTANTS.car_cost_var(i) }} </Var>
+            <Parent> {{ RSCONSTANTS.action_var() }} </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ RSCONSTANTS.idle_action() }} </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ RSCONSTANTS.private_sample_action(i) }} </Instance>
+                  <ValueTable> {{ cur_car_bias*SAMPLE_COST }} </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ RSCONSTANTS.shared_sample_action(i) }} </Instance>
+                  <ValueTable> {{ cur_car_bias*SAMPLE_COST }} </ValueTable>
+               </Entry>
+               {% for direction_symbol in RSCONSTANTS.DIRECTION_SYMBOLS %}
+               <Entry>
+                     <Instance>{{RSCONSTANTS.move_action(direction_symbol, i)}} </Instance>
+                     <ValueTable> {{ cur_car_bias*MOVE_COST }} </ValueTable>
+               </Entry>
+               {% endfor %}
+               {% for k in range(NUM_ROCKS) %}
+               {% set rock_tile_idx = ROCKS_POSITIONS[k] %}
+               {% if rock_tile_idx in CONTROL_AREAS[i] %}
+               <Entry>
+                     <Instance>{{RSCONSTANTS.sense_action(k, i)}}</Instance>
+                     <ValueTable> {{ cur_car_bias*SENSE_COST }} </ValueTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+             </Parameter>
+         </Func>
+         {% endfor %}
+
+         {% for i in range(NUM_CARS) %}
+         {% for j in range(NUM_ROCKS) %}
+         {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+         {% if rock_tile_idx in CONTROL_AREAS[i] %}
+         <Func>
+            <Var> {{ RSCONSTANTS.rock_penalties_var(j, i) }} </Var>
+            <Parent> {{ RSCONSTANTS.action_var() }} {{ time_zero(CARS_SYMBOLS[i]) }} {{ time_zero(ROCKS_SYMBOLS[j]) }} </Parent>
+            {% set rocks_any_pos = create_combination_template(NUM_ROCKS) %}
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               {% if rock_tile_idx in SHARED_ROCKS_POSITIONS %}
+               {% set cur_action = RSCONSTANTS.shared_sample_action(i) %}
+               {% else %}
+               {% set cur_action = RSCONSTANTS.private_sample_action(i) %}
+               {% endif %}
+               <Entry>
+                  <Instance> {{ cur_action }} {{ rock_tile_idx }} {{ RSCONSTANTS.bad_quality() }} </Instance>
+                  <ValueTable>{{ BAD_SAMPLE_PENALTY }}</ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         {% endif %}
+         {% endfor %}
+         {% endfor %}
+
+
+         {% for i in range(NUM_CARS) %}
+         <Func>
+            {% set agent_rocks = [] %}
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock_pos = ROCKS_POSITIONS[j] %}
+            {% if rock_pos in CONTROL_AREAS[i] %}
+            {{ agent_rocks.append(j) }}
+            {% endif %}
+            {% endfor %}
+            <Var> {{ RSCONSTANTS.rock_rewards_var(i) }} </Var>
+            <Parent>{% for j in agent_rocks %} {{ time_zero(ROCKS_SYMBOLS[j]) }}{% endfor -%}{% for j in agent_rocks %} {{ time_one(ROCKS_SYMBOLS[j]) }}{% endfor -%} </Parent>
+            {% set rocks_any_pos = create_combination_template(agent_rocks|length) %}
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> {{ rocks_any_pos }} {{ rocks_any_pos }} </Instance>
+                  <ValueTable>0</ValueTable>
+               </Entry>
+               {% for j in range(agent_rocks|length) %}
+               {% set combination_template = create_combination_template(agent_rocks|length, j) %}
+               {% set before_state = cast_to_template(combination_template, RSCONSTANTS.good_quality())  %}
+               {% set after_state = cast_to_template(combination_template, RSCONSTANTS.bad_quality()).replace('*', RSCONSTANTS.bad_quality()) %}
+               <Entry>
+                  <Instance> {{ before_state }} {{ after_state }} </Instance>
+                  <ValueTable> {{ TARGET_REWARD }} </ValueTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </Func>
+         {% endfor %}
+      </RewardFunction>
+</pomdpx>

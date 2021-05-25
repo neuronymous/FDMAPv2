@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx><Discount>0.995</Discount>
+<Variable><StateVar vnamePrev="a1_0" vnameCurr="a1_1"><ValueEnum>0 1 2 3</ValueEnum>
+</StateVar>
+<StateVar vnamePrev="a2_0" vnameCurr="a2_1"><ValueEnum>0 1 2 3</ValueEnum>
+</StateVar>
+<StateVar vnamePrev="b1_0" vnameCurr="b1_1"><ValueEnum>0 1 2 3</ValueEnum>
+</StateVar>
+<StateVar vnamePrev="b2_0" vnameCurr="b2_1"><ValueEnum>0 1 2 3</ValueEnum>
+</StateVar>
+<ObsVar vname="o_a1_b1"><ValueEnum>yes no null</ValueEnum>
+</ObsVar>
+<ObsVar vname="o_a1_b2"><ValueEnum>yes no null</ValueEnum>
+</ObsVar>
+<ObsVar vname="o_a2_b1"><ValueEnum>yes no null</ValueEnum>
+</ObsVar>
+<ObsVar vname="o_a2_b2"><ValueEnum>yes no null</ValueEnum>
+</ObsVar>
+<ActionVar vname="action_agent"><ValueEnum>amu_a1 amr_a1 amd_a1 aml_a1 as_b1_a1 apu_b2_a1 apr_b2_a1 apd_b2_a1 apl_b2_a1 as_b2_a1 aidle_a1 amu_a2 amr_a2 amd_a2 aml_a2 as_b1_a2 apu_b2_a2 apr_b2_a2 apd_b2_a2 apl_b2_a2 as_b2_a2 aidle_a2 ajpl_b1_a1_a2 ajpr_b1_a1_a2 ajpu_b1_a1_a2 ajpd_b1_a1_a2</ValueEnum>
+</ActionVar>
+<RewardVar vname="reward_b1"/>
+<RewardVar vname="reward_b2"/>
+<RewardVar vname="cost_a1"/>
+<RewardVar vname="cost_a2"/>
+</Variable>
+<InitialStateBelief><CondProb><Var>a1_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>0</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>a2_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>0</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>b1_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>0</Instance>
+<ProbTable>0.50</ProbTable>
+</Entry>
+<Entry><Instance>3</Instance>
+<ProbTable>0.50</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>b2_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>0</Instance>
+<ProbTable>0.50</ProbTable>
+</Entry>
+<Entry><Instance>3</Instance>
+<ProbTable>0.50</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</InitialStateBelief>
+<StateTransitionFunction><CondProb><Var>a1_1</Var>
+<Parent>action_agent a1_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>aml_a1 - -</Instance>
+<ProbTable>1.00 0 0 0
+1.00 0 0 0
+0 0 1.00 0
+0 0 1.00 0</ProbTable>
+</Entry>
+<Entry><Instance>amr_a1 - -</Instance>
+<ProbTable>0 1.00 0 0
+0 1.00 0 0
+0 0 0 1.00
+0 0 0 1.00</ProbTable>
+</Entry>
+<Entry><Instance>amu_a1 - -</Instance>
+<ProbTable>1.00 0 0 0
+0 1.00 0 0
+1.00 0 0 0
+0 1.00 0 0</ProbTable>
+</Entry>
+<Entry><Instance>amd_a1 - -</Instance>
+<ProbTable>0 0 1.00 0
+0 0 0 1.00
+0 0 1.00 0
+0 0 0 1.00</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>a2_1</Var>
+<Parent>action_agent a2_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>aml_a2 - -</Instance>
+<ProbTable>1.00 0 0 0
+1.00 0 0 0
+0 0 1.00 0
+0 0 1.00 0</ProbTable>
+</Entry>
+<Entry><Instance>amr_a2 - -</Instance>
+<ProbTable>0 1.00 0 0
+0 1.00 0 0
+0 0 0 1.00
+0 0 0 1.00</ProbTable>
+</Entry>
+<Entry><Instance>amu_a2 - -</Instance>
+<ProbTable>1.00 0 0 0
+0 1.00 0 0
+1.00 0 0 0
+0 1.00 0 0</ProbTable>
+</Entry>
+<Entry><Instance>amd_a2 - -</Instance>
+<ProbTable>0 0 1.00 0
+0 0 0 1.00
+0 0 1.00 0
+0 0 0 1.00</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>b1_1</Var>
+<Parent>action_agent a1_0 a2_0 b1_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>ajpd_b1_a1_a2 0 0 0 -</Instance>
+<ProbTable>0.20 0 0.80 0</ProbTable>
+</Entry>
+<Entry><Instance>ajpr_b1_a1_a2 0 0 0 -</Instance>
+<ProbTable>0.20 0.80 0 0</ProbTable>
+</Entry>
+<Entry><Instance>ajpu_b1_a1_a2 2 2 2 -</Instance>
+<ProbTable>0.80 0 0.20 0</ProbTable>
+</Entry>
+<Entry><Instance>ajpr_b1_a1_a2 2 2 2 -</Instance>
+<ProbTable>0 0 0.20 0.80</ProbTable>
+</Entry>
+<Entry><Instance>ajpd_b1_a1_a2 1 1 1 -</Instance>
+<ProbTable>0 0.20 0 0.80</ProbTable>
+</Entry>
+<Entry><Instance>ajpl_b1_a1_a2 1 1 1 -</Instance>
+<ProbTable>0.80 0.20 0 0</ProbTable>
+</Entry>
+<Entry><Instance>ajpu_b1_a1_a2 3 3 3 -</Instance>
+<ProbTable>0 0.80 0 0.20</ProbTable>
+</Entry>
+<Entry><Instance>ajpl_b1_a1_a2 3 3 3 -</Instance>
+<ProbTable>0 0 0.80 0.20</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>b2_1</Var>
+<Parent>action_agent a1_0 a2_0 b2_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>apd_b2_a1 0 * 0 -</Instance>
+<ProbTable>0.20 0 0.80 0</ProbTable>
+</Entry>
+<Entry><Instance>apr_b2_a1 0 * 0 -</Instance>
+<ProbTable>0.20 0.80 0 0</ProbTable>
+</Entry>
+<Entry><Instance>apu_b2_a1 2 * 2 -</Instance>
+<ProbTable>0.80 0 0.20 0</ProbTable>
+</Entry>
+<Entry><Instance>apr_b2_a1 2 * 2 -</Instance>
+<ProbTable>0 0 0.20 0.80</ProbTable>
+</Entry>
+<Entry><Instance>apd_b2_a1 1 * 1 -</Instance>
+<ProbTable>0 0.20 0 0.80</ProbTable>
+</Entry>
+<Entry><Instance>apl_b2_a1 1 * 1 -</Instance>
+<ProbTable>0.80 0.20 0 0</ProbTable>
+</Entry>
+<Entry><Instance>apu_b2_a1 3 * 3 -</Instance>
+<ProbTable>0 0.80 0 0.20</ProbTable>
+</Entry>
+<Entry><Instance>apl_b2_a1 3 * 3 -</Instance>
+<ProbTable>0 0 0.80 0.20</ProbTable>
+</Entry>
+<Entry><Instance>apd_b2_a2 * 0 0 -</Instance>
+<ProbTable>0.20 0 0.80 0</ProbTable>
+</Entry>
+<Entry><Instance>apr_b2_a2 * 0 0 -</Instance>
+<ProbTable>0.20 0.80 0 0</ProbTable>
+</Entry>
+<Entry><Instance>apu_b2_a2 * 2 2 -</Instance>
+<ProbTable>0.80 0 0.20 0</ProbTable>
+</Entry>
+<Entry><Instance>apr_b2_a2 * 2 2 -</Instance>
+<ProbTable>0 0 0.20 0.80</ProbTable>
+</Entry>
+<Entry><Instance>apd_b2_a2 * 1 1 -</Instance>
+<ProbTable>0 0.20 0 0.80</ProbTable>
+</Entry>
+<Entry><Instance>apl_b2_a2 * 1 1 -</Instance>
+<ProbTable>0.80 0.20 0 0</ProbTable>
+</Entry>
+<Entry><Instance>apu_b2_a2 * 3 3 -</Instance>
+<ProbTable>0 0.80 0 0.20</ProbTable>
+</Entry>
+<Entry><Instance>apl_b2_a2 * 3 3 -</Instance>
+<ProbTable>0 0 0.80 0.20</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</StateTransitionFunction>
+<ObsFunction><CondProb><Var> o_a1_b1 </Var>
+<Parent>action_agent a1_1 b1_1</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * null</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 * * no</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 * * null</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 0 0 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 0 0 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 1 1 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 1 1 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 2 2 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 2 2 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 3 3 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a1 3 3 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var> o_a1_b2 </Var>
+<Parent>action_agent a1_1 b2_1</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * null</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 * * no</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 * * null</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 0 0 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 0 0 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 1 1 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 1 1 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 2 2 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 2 2 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 3 3 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a1 3 3 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var> o_a2_b1 </Var>
+<Parent>action_agent a2_1 b1_1</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * null</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 * * no</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 * * null</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 0 0 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 0 0 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 1 1 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 1 1 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 2 2 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 2 2 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 3 3 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b1_a2 3 3 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var> o_a2_b2 </Var>
+<Parent>action_agent a2_1 b2_1</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * null</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 * * no</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 * * null</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 0 0 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 0 0 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 1 1 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 1 1 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 2 2 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 2 2 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 3 3 yes</Instance>
+<ProbTable>1.00</ProbTable>
+</Entry>
+<Entry><Instance>as_b2_a2 3 3 no</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</ObsFunction>
+<RewardFunction><Func><Var> cost_a1 </Var>
+<Parent>action_agent</Parent>
+<Parameter type="TBL"><Entry><Instance>*</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>aidle_a1</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>aml_a1</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amr_a1</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amu_a1</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amd_a1</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpl_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpr_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpu_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpd_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>as_b1_a1</Instance>
+<ValueTable>-1.00</ValueTable>
+</Entry>
+<Entry><Instance>apl_b2_a1</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apr_b2_a1</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apu_b2_a1</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apd_b2_a1</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>as_b2_a1</Instance>
+<ValueTable>-1.00</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+<Func><Var> cost_a2 </Var>
+<Parent>action_agent</Parent>
+<Parameter type="TBL"><Entry><Instance>*</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>aidle_a2</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>aml_a2</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amr_a2</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amu_a2</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>amd_a2</Instance>
+<ValueTable>-3.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpl_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpr_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpu_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>ajpd_b1_a1_a2</Instance>
+<ValueTable>-20.00</ValueTable>
+</Entry>
+<Entry><Instance>as_b1_a2</Instance>
+<ValueTable>-1.00</ValueTable>
+</Entry>
+<Entry><Instance>apl_b2_a2</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apr_b2_a2</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apu_b2_a2</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>apd_b2_a2</Instance>
+<ValueTable>-10.00</ValueTable>
+</Entry>
+<Entry><Instance>as_b2_a2</Instance>
+<ValueTable>-1.00</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+<Func><Var> reward_b1 </Var>
+<Parent>b1_0 b1_1</Parent>
+<Parameter type="TBL"><Entry><Instance>- 0</Instance>
+<ValueTable>0 2000.00 2000.00 2000.00</ValueTable>
+</Entry>
+<Entry><Instance>0 -</Instance>
+<ValueTable>0 -10000.00 -10000.00 -10000.00</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+<Func><Var> reward_b2 </Var>
+<Parent>b2_0 b2_1</Parent>
+<Parameter type="TBL"><Entry><Instance>- 0</Instance>
+<ValueTable>0 2000.00 2000.00 2000.00</ValueTable>
+</Entry>
+<Entry><Instance>0 -</Instance>
+<ValueTable>0 -10000.00 -10000.00 -10000.00</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+</RewardFunction>
+</pomdpx>

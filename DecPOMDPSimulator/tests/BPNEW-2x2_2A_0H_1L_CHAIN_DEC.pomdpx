@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="BoxPushing"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A simple box pushing domain. 2x2 grid, 2 agents, 1 boxes, 0 heavy.
+      Heavy boxes are       Target tiles are         </Description>
+      <Discount> 0.99 </Discount>
+      <NumAgents> 2 </NumAgents>
+      <Variable>
+
+         <StateVar vnamePrev="agent1_0" vnameCurr="agent1_1" fullyObs="false">
+            <ValueEnum> 0 1 2 3 </ValueEnum>
+         </StateVar>
+         <StateVar vnamePrev="agent2_0" vnameCurr="agent2_1" fullyObs="false">
+            <ValueEnum> 0 1 2 3 </ValueEnum>
+         </StateVar>
+
+         <StateVar vnamePrev="box1_0" vnameCurr="box1_1" fullyObs="false">
+            <ValueEnum> 0 1 2 3 </ValueEnum>
+         </StateVar>
+
+         <ObsVar vname="obs_box1_agent1">
+            <ValueEnum>yes no null</ValueEnum>
+         </ObsVar>
+         <ObsVar vname="obs_box1_agent2">
+            <ValueEnum>yes no null</ValueEnum>
+         </ObsVar>
+
+         <ActionVar vname="main_action_var">
+            <ValueEnum> action_sense_box1_agent2 action_move_right_agent1 action_move_up_agent2 action_idle action_push_down_box1_agent1 action_move_up_agent1 action_push_up_box1_agent2 action_push_up_box1_agent1 action_push_right_box1_agent1 action_move_left_agent1 action_move_left_agent2 action_push_right_box1_agent2 action_move_right_agent2 action_move_down_agent2 action_sense_box1_agent1 action_push_down_box1_agent2 action_push_left_box1_agent2 action_move_down_agent1 action_push_left_box1_agent1 </ValueEnum>
+         </ActionVar>
+
+         <RewardVar vname="reward_box1" />
+
+         <RewardVar vname="cost_agent1" />
+         <RewardVar vname="cost_agent2" />
+
+      </Variable>
+
+      <InitialStateBelief>
+
+         <CondProb>
+            <Var>agent1_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> 1 </Instance>
+                    <ProbTable> 1.0 </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>agent2_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> 3 </Instance>
+                    <ProbTable> 1.0 </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+         <CondProb>
+            <Var>box1_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> 0 </Instance>
+                    <ProbTable> 0.5 </ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance> 3 </Instance>
+                    <ProbTable> 0.5 </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         <CondProb>
+            <Var>agent1_1</Var>
+            <Parent>main_action_var agent1_0</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_left_agent1 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00
+0.00	0.00	1.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_right_agent1 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00	0.00	0.00
+0.00	1.00	0.00	0.00
+0.00	0.00	0.00	1.00
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_up_agent1 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00
+1.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_down_agent1 - - </Instance>
+                     <ProbTable>
+                     0.00	0.00	1.00	0.00
+0.00	0.00	0.00	1.00
+0.00	0.00	1.00	0.00
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>agent2_1</Var>
+            <Parent>main_action_var agent2_0</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_left_agent2 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+1.00	0.00	0.00	0.00
+0.00	0.00	1.00	0.00
+0.00	0.00	1.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_right_agent2 - - </Instance>
+                     <ProbTable>
+                     0.00	1.00	0.00	0.00
+0.00	1.00	0.00	0.00
+0.00	0.00	0.00	1.00
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_up_agent2 - - </Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00
+1.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_move_down_agent2 - - </Instance>
+                     <ProbTable>
+                     0.00	0.00	1.00	0.00
+0.00	0.00	0.00	1.00
+0.00	0.00	1.00	0.00
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+
+         <CondProb>
+            <Var>box1_1</Var>
+            <Parent>main_action_var agent1_0 agent2_0 box1_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance> * * * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_down_box1_agent1 0 * 0 - </Instance>
+                     <ProbTable>
+                     0.2 0.0 0.8 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_right_box1_agent1 0 * 0 - </Instance>
+                     <ProbTable>
+                     0.2 0.8 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_down_box1_agent1 1 * 1 - </Instance>
+                     <ProbTable>
+                     0.0 0.2 0.0 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_left_box1_agent1 1 * 1 - </Instance>
+                     <ProbTable>
+                     0.8 0.2 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_up_box1_agent1 2 * 2 - </Instance>
+                     <ProbTable>
+                     0.8 0.0 0.2 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_right_box1_agent1 2 * 2 - </Instance>
+                     <ProbTable>
+                     0.0 0.0 0.2 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_up_box1_agent1 3 * 3 - </Instance>
+                     <ProbTable>
+                     0.0 0.8 0.0 0.2
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_left_box1_agent1 3 * 3 - </Instance>
+                     <ProbTable>
+                     0.0 0.0 0.8 0.2
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_down_box1_agent2 * 0 0 - </Instance>
+                     <ProbTable>
+                     0.2 0.0 0.8 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_right_box1_agent2 * 0 0 - </Instance>
+                     <ProbTable>
+                     0.2 0.8 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_down_box1_agent2 * 1 1 - </Instance>
+                     <ProbTable>
+                     0.0 0.2 0.0 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_left_box1_agent2 * 1 1 - </Instance>
+                     <ProbTable>
+                     0.8 0.2 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_up_box1_agent2 * 2 2 - </Instance>
+                     <ProbTable>
+                     0.8 0.0 0.2 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_right_box1_agent2 * 2 2 - </Instance>
+                     <ProbTable>
+                     0.0 0.0 0.2 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_up_box1_agent2 * 3 3 - </Instance>
+                     <ProbTable>
+                     0.0 0.8 0.0 0.2
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> action_push_left_box1_agent2 * 3 3 - </Instance>
+                     <ProbTable>
+                     0.0 0.0 0.8 0.2
+                     </ProbTable>
+               </Entry>
+
+            </Parameter>
+         </CondProb>
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         <CondProb>
+            <Var> obs_box1_agent1 </Var>
+            <Parent> main_action_var agent1_1 box1_1 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 * * no </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 0 0 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 0 0 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 1 1 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 1 1 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 2 2 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 2 2 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 3 3 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 3 3 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var> obs_box1_agent2 </Var>
+            <Parent> main_action_var agent2_1 box1_1 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 * * no </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 0 0 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 0 0 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 1 1 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 1 1 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 2 2 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 2 2 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 3 3 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 3 3 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+      </ObsFunction>
+      <RewardFunction>
+         <Func>
+            <Var> cost_agent1 </Var>
+            <Parent> main_action_var </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_idle </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_left_agent1 </Instance>
+                  <ValueTable> -10.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_right_agent1 </Instance>
+                  <ValueTable> -10.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_up_agent1 </Instance>
+                  <ValueTable> -10.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_down_agent1 </Instance>
+                  <ValueTable> -10.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_left_box1_agent1 </Instance>
+                  <ValueTable> -30.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_right_box1_agent1 </Instance>
+                  <ValueTable> -30.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_up_box1_agent1 </Instance>
+                  <ValueTable> -30.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_down_box1_agent1 </Instance>
+                  <ValueTable> -30.0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent1 </Instance>
+                  <ValueTable> -1.0 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> cost_agent2 </Var>
+            <Parent> main_action_var </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_idle </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_left_agent2 </Instance>
+                  <ValueTable> -10.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_right_agent2 </Instance>
+                  <ValueTable> -10.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_up_agent2 </Instance>
+                  <ValueTable> -10.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_move_down_agent2 </Instance>
+                  <ValueTable> -10.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_left_box1_agent2 </Instance>
+                  <ValueTable> -31.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_right_box1_agent2 </Instance>
+                  <ValueTable> -31.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_up_box1_agent2 </Instance>
+                  <ValueTable> -31.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_push_down_box1_agent2 </Instance>
+                  <ValueTable> -31.5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> action_sense_box1_agent2 </Instance>
+                  <ValueTable> -1.05 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+
+         <Func>
+            <Var> reward_box1 </Var>
+            <Parent> box1_0 box1_1 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> - 0 </Instance>
+                  <ValueTable> 0  500  500  500 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> 0 - </Instance>
+                  <ValueTable> 0  -500  -500  -500 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+      </RewardFunction>
+</pomdpx>

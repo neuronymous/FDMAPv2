@@ -1,0 +1,385 @@
+{% set NUM_TILES = WIDTH %}
+{% set AGENT_ACTIONS = actions_per_agent(NUM_AGENTS) %}
+{% set POS_VALUES = range(0,NUM_TILES)| join(' ') %}
+{% set TILES_LIST = calculate_all_tiles(WIDTH, 1) %}
+{% set AGENTS_PAIRS = calculate_pairs(NUM_AGENTS) %}
+{% set NEIGHBORS_DICT = calculate_neighbors_dict(WIDTH, 1) %}
+{% set DIRECTION_MATRICES = calculate_direction_matrices(WIDTH, 1, MOVE_PROB) %}
+{% set OPEN_REWARDS_MATRIX = calc_open_reward_matrix(WIDTH, 1, NUM_AGENTS, AGENT_ACTIONS, OPEN_REWARD, OPEN_PENALTY, COPEN_REWARD,
+                            COPEN_PENALTY) %}
+{% set OPEN_EFFECT_MATRIX = calc_open_effect_matrix(WIDTH, 1, NUM_AGENTS, AGENT_ACTIONS) %}
+<?xml version="1.0" encoding="UTF-8"?>
+<ProbModelXML formatVersion="0.2.0">
+    <ProbNet type="DEC_POMDP">
+        <Agents>
+            {% for agent in AGENTS %}
+            <Agent name="{{ agent }}"/>
+            {% endfor %}
+        </Agents>
+        <Variables>
+
+            {% for agent in AGENTS %}
+            <Variable name="{{ agent }}" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    {% for v in POS_VALUES.split(' ') %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="{{ agent }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for v in POS_VALUES.split(' ') %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            <Variable name="{{ TIGER }}" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    {% for v in POS_VALUES.split(' ') %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="{{ TIGER }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for v in POS_VALUES.split(' ') %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+
+
+            {% for a_i in range(NUM_AGENTS) %}
+            {% set agent = AGENTS[a_i] %}
+            <Variable name="action_{{ agent }}" timeSlice="0" type="finiteStates" role="decision">
+                <Agent name="{{ agent }}" />
+                <States>
+                    {% for a in AGENT_ACTIONS[a_i] %}
+                    <State name="{{ a }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="action_{{ agent }}" timeSlice="1" type="finiteStates" role="decision">
+                <Agent name="{{ agent }}" />
+                <States>
+                    {% for a in AGENT_ACTIONS[a_i] %}
+                    <State name="{{ a }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for agent in AGENTS %}
+            <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for o in constants.OBS_VALUES %}
+                    <State name="{{ o }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for agent in AGENTS %}
+            <Variable name="cost_{{ agent }}" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+            {% endfor %}
+
+            <Variable name="reward_{{ TIGER }}" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+
+        </Variables>
+
+        <Links>
+        {% for agent in AGENTS %}
+            <Link directed="true">
+                <Variable name="{{ agent }}" timeSlice="0" />
+                <Variable name="{{ agent }}" timeSlice="1" />
+            </Link>
+        {% endfor %}
+
+            <Link directed="true">
+                <Variable name="{{ TIGER }}" timeSlice="0" />
+                <Variable name="{{ TIGER }}" timeSlice="1" />
+            </Link>
+
+        {% for agent in AGENTS %}
+            <Link directed="true">
+                <Variable name="action_{{ agent }}" timeSlice="0" />
+                <Variable name="{{ agent }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                <Variable name="action_{{ agent }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_{{ agent }}" timeSlice="0" />
+                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ agent }}" timeSlice="1" />
+                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_{{ agent }}" timeSlice="0" />
+                <Variable name="{{ TIGER }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ agent }}" timeSlice="0" />
+                <Variable name="{{ TIGER }}" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ agent }}" timeSlice="0" />
+                <Variable name="{{ TIGER }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ TIGER }}" timeSlice="1" />
+                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+            </Link>
+        {% endfor %}
+
+        {% for agent in AGENTS %}
+            <Link directed="true">
+                <Variable name="action_{{ agent }}" timeSlice="0" />
+                <Variable name="cost_{{ agent }}" timeSlice="0" />
+            </Link>
+             <Link directed="true">
+                <Variable name="action_{{ agent }}" timeSlice="0" />
+                <Variable name="reward_{{ TIGER }}" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="{{ agent }}" timeSlice="0" />
+                <Variable name="reward_{{ TIGER }}" timeSlice="0" />
+            </Link>
+        {% endfor %}
+            <Link directed="true">
+                <Variable name="{{ TIGER }}" timeSlice="0" />
+                <Variable name="reward_{{ TIGER }}" timeSlice="0" />
+            </Link>
+
+        </Links>
+
+        <Potentials>
+            {% for a_i in range(NUM_AGENTS) %}
+            {% set agent = AGENTS[a_i] %}
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ agent }}" timeSlice="0" />
+                </Variables>
+                {% set probs = [] %}
+                {% for i in range(NUM_TILES) %}
+                {%- if i == a_i -%}
+                {{ probs.append(1.0)|default('', true) }}
+                {%- else -%}
+                {{ probs.append(0.0)|default('', true) }}
+                {%- endif -%}
+                {% endfor %}
+                <Values>{{probs|join(' ')}}</Values>
+            </Potential>
+            {% endfor %}
+             <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ TIGER }}" timeSlice="0" />
+                </Variables>
+                {% set probs = [] %}
+                {% for tile in TILES_LIST %}
+                {{ probs.append(1/NUM_TILES)|default('', true) }}
+                {% endfor %}
+                <Values>{{probs|join(' ')}}</Values>
+            </Potential>
+            {% for a_i in range(NUM_AGENTS) %}
+            {% set agent = AGENTS[a_i] %}
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ agent }}" timeSlice="1" />
+                  <Variable name="{{ agent }}" timeSlice="0" />
+                  <Variable name="action_{{ agent }}" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_{{ agent }}" timeSlice="0" />
+                <Branches>
+                    {% for direction_symbol in constants.DIRECTION_SYMBOLS %}
+                    <Branch>
+                        <States>
+                            <State name="{{constants.move_action(direction_symbol, a_i)}}" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ agent }}" timeSlice="1" />
+                                <Variable name="{{ agent }}" timeSlice="0" />
+                            </Variables>
+                            <Values> {{ DIRECTION_MATRICES[direction_symbol] }} </Values>
+                        </Potential>
+                    </Branch>
+                    {% endfor %}
+                    <Branch>
+                        <States>
+                            {% for action in AGENT_ACTIONS[a_i] %}
+                            {% if not constants.is_move_action(action) %}
+                            <State name="{{ action }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ agent }}" timeSlice="1" />
+                                <Variable name="{{ agent }}" timeSlice="0" />
+                            </Variables>
+                            <Values> {{ get_identity_matrix(NUM_TILES) }} </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            {% endfor %}
+
+
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                    <Variable name="{{ TIGER }}" timeSlice="1" />
+                    <Variable name="{{ TIGER }}" timeSlice="0" />
+                    {% for a_i in range(NUM_AGENTS) %}
+                    {% set agent = AGENTS[a_i] %}
+                    <Variable name="{{ agent }}" timeSlice="0" />
+                    {% endfor %}
+                    {% for a_i in range(NUM_AGENTS) %}
+                    {% set agent = AGENTS[a_i] %}
+                    <Variable name="action_{{ agent }}" timeSlice="0" />
+                    {% endfor %}
+                </Variables>
+                <Values>
+                {{ OPEN_EFFECT_MATRIX }}
+                </Values>
+            </Potential>
+
+            {% for a_i in range(NUM_AGENTS) %}
+            {% set agent = AGENTS[a_i] %}
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                    <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                    <Variable name="{{ TIGER }}" timeSlice="1" />
+                    <Variable name="{{ agent }}" timeSlice="1" />
+                    <Variable name="action_{{ agent }}" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_{{ agent }}" timeSlice="0" />
+                <Branches>
+                    <Branch>
+                        <States>
+                            <State name="{{ constants.listen_action(a_i) }}" />
+                        </States>
+                        <Potential type="Tree/ADD" role="conditionalProbability">
+                            <Variables>
+                                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                                <Variable name="{{ TIGER }}" timeSlice="1" />
+                                <Variable name="{{ agent }}" timeSlice="1" />
+                            </Variables>
+                            <TopVariable name="{{ agent }}" timeSlice="1" />
+                            <Branches>
+                                {% for tile in TILES_LIST %}
+                                {% set tile_idx = calculate_tile_index(WIDTH, tile) %}
+                                <Branch>
+                                    <States>
+                                        <State name="{{ tile_idx }}" />
+                                    </States>
+                                    <Potential type="Tree/ADD" role="conditionalProbability">
+                                        <Variables>
+                                            <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                                            <Variable name="{{ TIGER }}" timeSlice="1" />
+                                        </Variables>
+                                        <TopVariable name="{{ TIGER }}" timeSlice="1" />
+                                        <Branches>
+                                            <Branch>
+                                                <States>
+                                                    <State name="{{ tile_idx }}" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> {{ LISTEN_PROB|round(3) }} {{ (1-LISTEN_PROB)|round(3) }} 0.0 </Values>
+                                                </Potential>
+                                            </Branch>
+                                            <Branch>
+                                                <States>
+                                                   {% for other_tile in TILES_LIST %}
+                                                   {% set other_tile_idx = calculate_tile_index(WIDTH, other_tile) %}
+                                                   {% if other_tile_idx != tile_idx %}
+                                                   <State name="{{ other_tile_idx }}" />
+                                                   {% endif %}
+                                                   {% endfor %}
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> {{ (1-LISTEN_PROB)|round(3) }} {{ LISTEN_PROB|round(3) }} 0.0 </Values>
+                                               </Potential>
+                                            </Branch>
+                                        </Branches>
+                                    </Potential>
+                                </Branch>
+                                {% endfor %}
+                            </Branches>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            {% for action in AGENT_ACTIONS[a_i] %}
+                            {% if not constants.is_listen_action(action) %}
+                            <State name="{{ action }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ constants.obs_symbol(agent) }}" timeSlice="1" />
+                            </Variables>
+                            <Values> 0.0 0.0 1.0  </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            {% endfor %}
+
+            {% for a_i in range(NUM_AGENTS) %}
+            {% set agent = AGENTS[a_i] %}
+            {% set cur_bias = AGENTS_BIAS[a_i] %}
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="cost_{{ agent }}" timeSlice="0" />
+                <Variables>
+                    <Variable name="action_{{ agent }}" timeSlice="0" />
+                </Variables>
+                <Values>{% for action in AGENT_ACTIONS[a_i] %}{% if constants.is_listen_action(action) %} {{ cur_bias*LISTEN_COST }} {% elif constants.is_open_action(action) %} {{ cur_bias*OPEN_COST }} {% elif constants.is_move_action(action) %} {{ cur_bias*MOVE_COST }} {% elif constants.is_copen_action(action) %} {{ cur_bias*COPEN_COST }} {% else %} 0 {% endif %}{% endfor %}</Values>
+            </Potential>
+            {% endfor %}
+
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="reward_{{ TIGER }}" timeSlice="0" />
+                <Variables>
+                    <Variable name="{{ TIGER }}" timeSlice="0"/>
+                    {% for a_i in range(NUM_AGENTS) %}
+                    {% set agent = AGENTS[a_i] %}
+                    <Variable name="{{ agent }}" timeSlice="0"/>
+                    {% endfor %}
+                    {% for a_i in range(NUM_AGENTS) %}
+                    {% set agent = AGENTS[a_i] %}
+                    <Variable name="action_{{ agent }}" timeSlice="0"/>
+                    {% endfor %}
+                </Variables>
+                <Values> {{ OPEN_REWARDS_MATRIX }} </Values>
+            </Potential>
+        </Potentials>
+    </ProbNet>
+</ProbModelXML>

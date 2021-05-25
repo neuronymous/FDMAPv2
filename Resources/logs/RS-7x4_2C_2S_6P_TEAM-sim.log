@@ -1,0 +1,11 @@
+
+Loading the model ...
+  input file   : /home/eliranab/FDMAP/Resources/problems/RS-7x4_2C_2S_6P_TEAM.pomdpx
+
+Loading the policy ...
+  input file   : /home/eliranab/FDMAP/Resources/policies/RS-7x4_2C_2S_6P_TEAM.policy
+Simulation took ERROR: couldn't open /home/eliranab/FDMAP/Resources/policies/RS-7x4_2C_2S_6P_TEAM.policy for reading 
+
+real	0m44.105s
+user	0m42.723s
+sys	0m1.164s 3131341511581881
