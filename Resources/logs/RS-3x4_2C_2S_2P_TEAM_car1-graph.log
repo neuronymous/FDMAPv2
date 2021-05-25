@@ -1,0 +1,27 @@
+input file   : /home/eliranab/FDMAP/Resources/problems/RS-3x4_2C_2S_2P_TEAM_car1.pomdpx
+Use one-step look ahead
+discount : 0.99
+initialBeliefY : 
+size: 1024,
+ data: [112= 0.0625, 113= 0.0625, 114= 0.0625, 115= 0.0625, 116= 0.0625, 117= 0.0625, 118= 0.0625, 119= 0.0625, 120= 0.0625, 121= 0.0625, 122= 0.0625, 123= 0.0625, 124= 0.0625, 125= 0.0625, 126= 0.0625, 127= 0.0625]
+initialBeliefStval : 
+initialBeliefStval stval: 0
+size: 1024,
+ data: [112= 0.0625, 113= 0.0625, 114= 0.0625, 115= 0.0625, 116= 0.0625, 117= 0.0625, 118= 0.0625, 119= 0.0625, 120= 0.0625, 121= 0.0625, 122= 0.0625, 123= 0.0625, 124= 0.0625, 125= 0.0625, 126= 0.0625, 127= 0.0625]
+initialBeliefX : 
+1
+1 
+Num X States : 1
+Num Y States : 1024
+Num Action : 16
+Num Observations : 27
+X Trans : Object at 0x1e25ab0
+Y Trans : Object at 0x1e246a0
+Obs Prob : Object at 0x1e25b00
+Rewards : Object at 0x1e259c0
+
+NOT In special case for initial X is a distribtion
+Graph generation took 
+real	0m3.780s
+user	0m3.720s
+sys	0m0.060s

@@ -1,0 +1,44 @@
+digraph G
+{
+root [label="Y (0,1,0) 0.5\lA (listen_agent2)\l" shape=doublecircle labeljust="l"];
+x0row1 [label="Y (0,0,0) 0.5\lA (listen_agent2)\l"];
+x0row20 [label="Y (1,1,0) 0.97\lA (\ncopen_agent1_agent2)\l"];
+x0row22 [label="Y (1,1,0) 0.85\lA (listen_agent2)\l"];
+x0row7 [label="Y (0,1,1) 0.97\lA (\nmove_left_agent2)\l"];
+x0row8 [label="Y (0,0,1) 0.97\lA (\ncopen_agent1_agent2)\l"];
+x0row14 [label="Y (0,0,0) 0.85\lA (listen_agent2)\l"];
+x0row3 [label="Y (0,1,1) 0.85\lA (listen_agent2)\l"];
+x0row4 [label="Y (0,1,0) 0.85\lA (listen_agent2)\l"];
+x0row16 [label="Y (0,0,0) 0.97\lA (\nmove_right_agent1)\l"];
+x0row17 [label="Y (1,0,0) 0.97\lA (\nmove_right_agent2)\l"];
+x0row18 [label="Y (0,1,0) 0.97\lA (\nmove_right_agent1)\l"];
+x0row2 [label="Y (1,1,0) 0.5\lA (listen_agent2)\l"];
+x0row5 [label="Y (0,0,1) 0.85\lA (listen_agent2)\l"];
+x0row6 [label="Y (1,1,1) 0.85\lA (listen_agent2)\l"];
+x0row9 [label="Y (1,1,1) 0.97\lA (\nmove_left_agent1)\l"];
+root -> x0row3 [label="o (null,yes) 0.5\l"];
+root -> x0row4 [label="o (null,no) 0.5\l"];
+x0row3 -> x0row7 [label="o (null,yes) 0.745\l"];
+x0row3 -> root [label="o (null,no) 0.255\l"];
+x0row7 -> x0row8 [label="o (null,null) 1\l"];
+x0row8 -> x0row1 [label="o (null,null) 1\l"];
+x0row1 -> x0row14 [label="o (null,yes) 0.5\l"];
+x0row1 -> x0row5 [label="o (null,no) 0.5\l"];
+x0row14 -> x0row16 [label="o (null,yes) 0.745\l"];
+x0row14 -> x0row1 [label="o (null,no) 0.255\l"];
+x0row16 -> x0row17 [label="o (null,null) 1\l"];
+x0row17 -> x0row20 [label="o (null,null) 1\l"];
+x0row20 -> x0row2 [label="o (null,null) 1\l"];
+x0row2 -> x0row6 [label="o (null,yes) 0.5\l"];
+x0row2 -> x0row22 [label="o (null,no) 0.5\l"];
+x0row6 -> x0row9 [label="o (null,yes) 0.745\l"];
+x0row6 -> x0row2 [label="o (null,no) 0.255\l"];
+x0row9 -> x0row7 [label="o (null,null) 1\l"];
+x0row22 -> x0row2 [label="o (null,yes) 0.255\l"];
+x0row22 -> x0row20 [label="o (null,no) 0.745\l"];
+x0row5 -> x0row1 [label="o (null,yes) 0.255\l"];
+x0row5 -> x0row8 [label="o (null,no) 0.745\l"];
+x0row4 -> root [label="o (null,yes) 0.255\l"];
+x0row4 -> x0row18 [label="o (null,no) 0.745\l"];
+x0row18 -> x0row20 [label="o (null,null) 1\l"];
+}

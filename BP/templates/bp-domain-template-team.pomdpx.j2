@@ -1,0 +1,295 @@
+{% set NUM_TILES = WIDTH*HEIGHT %}
+{% set ACTION_LIST = calculate_action_list(NUM_AGENTS, NUM_BOXES, HEAVY_BOXES) %}
+{% set POS_VALUES = range(0,NUM_TILES)| join(' ') %}
+{% set TILES_LIST = calculate_all_tiles(WIDTH, HEIGHT) %}
+{% set AGENTS_PAIRS = calculate_pairs(NUM_AGENTS) %}
+{% set NEIGHBORS_DICT = calculate_neighbors_dict(WIDTH, HEIGHT) %}
+{% set DIRECTION_MATRICES = calculate_direction_matrices(WIDTH, HEIGHT, PROB_MOVE) %}
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="BoxPushing"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A simple box pushing domain. {{WIDTH}}x{{HEIGHT}} grid, {{NUM_AGENTS}} agents, {{NUM_BOXES}} boxes, {{HEAVY_BOXES|length}} heavy.
+      Heavy boxes are {% for b in HEAVY_BOXES %} {{b}} {% endfor %}
+      Target tiles are {% for t in TARGET_TILES %} {{t}} {% endfor %}
+      </Description>
+      <Discount> {{DISCOUNT}} </Discount>
+      <NumAgents> {{NUM_AGENTS}} </NumAgents>
+      <Variable>
+
+         {% for agent in AGENTS %}
+         <StateVar vnamePrev="{{ time_zero(agent) }}" vnameCurr="{{ time_one(agent) }}" fullyObs="false">
+            <ValueEnum> {{ POS_VALUES }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         {% for box in BOXES %}
+         <StateVar vnamePrev="{{ time_zero(box) }}" vnameCurr="{{ time_one(box) }}" fullyObs="false">
+            <ValueEnum> {{ POS_VALUES }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         {% for b_i in range(NUM_BOXES) %}
+         <ObsVar vname="{{ bpconstants.minobs_symbol(b_i) }}">
+            <ValueEnum>{{ bpconstants.OBS_VALUES|join(' ') }}</ValueEnum>
+         </ObsVar>
+         {% endfor %}
+
+         <ActionVar vname="{{ bpconstants.action_var() }}">
+            <ValueEnum> {{ ACTION_LIST|join(' ') }} </ValueEnum>
+         </ActionVar>
+
+         {% for b_i in range(NUM_BOXES) %}
+         <RewardVar vname="{{ bpconstants.box_reward_var(b_i) }}" />
+         {% endfor %}
+
+         {% for a_i in range(NUM_AGENTS) %}
+         <RewardVar vname="{{ bpconstants.agent_cost_var(a_i) }}" />
+         {% endfor %}
+
+      </Variable>
+
+      <InitialStateBelief>
+
+         {% for a_i in range(NUM_AGENTS) %}
+         <CondProb>
+            <Var>{{ time_zero(AGENTS[a_i]) }}</Var>
+            <Parent>{{ pomdpxconstants.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+            {% if not AGENTS_POS_DIST[a_i] is none %}
+                {% for tile, prob in AGENTS_POS_DIST[a_i].items() %}
+                {% set tile_index = calculate_tile_index(WIDTH, tile) %}
+                <Entry>
+                    <Instance> {{tile_index}} </Instance>
+                    <ProbTable> {{prob}} </ProbTable>
+                </Entry>
+                {% endfor %}
+            {% else %}
+                <Entry>
+                    <Instance> - </Instance>
+                    <ProbTable> uniform </ProbTable>
+                </Entry>
+            {% endif %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         {% for b_i in range(NUM_BOXES) %}
+         <CondProb>
+            <Var>{{ time_zero(BOXES[b_i]) }}</Var>
+            <Parent>{{ pomdpxconstants.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+            {% if not BOXES_POS_DIST[b_i] is none %}
+                {% for tile, prob in BOXES_POS_DIST[b_i].items() %}
+                {% set tile_index = calculate_tile_index(WIDTH, tile) %}
+                <Entry>
+                    <Instance> {{tile_index}} </Instance>
+                    <ProbTable> {{prob}} </ProbTable>
+                </Entry>
+                {% endfor %}
+            {% else %}
+                <Entry>
+                    <Instance> - </Instance>
+                    <ProbTable> uniform </ProbTable>
+                </Entry>
+            {% endif %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         {% for a_i in range(NUM_AGENTS) %}
+         {% set agent = AGENTS[a_i] %}
+         <CondProb>
+            <Var>{{ time_one(agent) }}</Var>
+            <Parent>{{ bpconstants.action_var() }} {{ time_zero(agent) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               {% for direction_symbol in bpconstants.DIRECTION_SYMBOLS %}
+               <Entry>
+                     <Instance> {{ bpconstants.move_action(direction_symbol, a_i) }} - - </Instance>
+                     <ProbTable>
+                     {{ DIRECTION_MATRICES[direction_symbol] }}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         {% for b_i in range(NUM_BOXES) %}
+         {% set box = BOXES[b_i] %}
+         <CondProb>
+            <Var>{{ time_one(box) }}</Var>
+            <Parent> {{ bpconstants.action_var() }}{% for a_i in range(NUM_AGENTS) %} {{time_zero(AGENTS[a_i])}}{% endfor %} {{ time_zero(BOXES[b_i]) }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     {% set position_prefix = '* ' * NUM_AGENTS %}
+                     <Instance> * {{ position_prefix|trim }} - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+            {% if b_i not in HEAVY_BOXES %}
+               {% for a_i in range(NUM_AGENTS) %}
+               {% set combination_template = create_combination_template(NUM_AGENTS, a_i) %}
+               {% for src_tile in TILES_LIST %}
+               {% for dst_tile in NEIGHBORS_DICT[src_tile] %}
+               {% set direction = calculate_direction(src_tile, dst_tile) %}
+               {% set cur_action = bpconstants.push_action(direction, b_i, a_i) %}
+               {% set src_idx = calculate_tile_index(WIDTH, src_tile) %}
+               {% set dst_idx = calculate_tile_index(WIDTH, dst_tile) %}
+               {% set transition_row = calculate_transitions_vec(src_idx, dst_idx, PROB_PUSH, NUM_TILES)|join(' ') %}
+               {% set position_prefix = cast_to_template(combination_template, (src_idx|string)) %}
+               <Entry>
+                     <Instance> {{cur_action}} {{position_prefix}} {{src_idx}} - </Instance>
+                     <ProbTable>
+                     {{transition_row}}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+               {% endfor %}
+               {% endfor %}
+
+            {% elif b_i in HEAVY_BOXES %}
+               {% for a1_i, a2_i in AGENTS_PAIRS %}
+               {% set combination_template = create_combination_template(NUM_AGENTS, a1_i, a2_i) %}
+               {% for src_tile in TILES_LIST %}
+               {% for dst_tile in NEIGHBORS_DICT[src_tile] %}
+               {% set direction = calculate_direction(src_tile, dst_tile) %}
+               {% set cur_action = bpconstants.cpush_action(direction, b_i, a1_i, a2_i) %}
+               {% set src_idx = calculate_tile_index(WIDTH, src_tile) %}
+               {% set dst_idx = calculate_tile_index(WIDTH, dst_tile) %}
+               {% set transition_row = calculate_transitions_vec(src_idx, dst_idx, PROB_CPUSH, NUM_TILES)|join(' ') %}
+               {% set position_prefix = cast_to_template(combination_template, (src_idx|string)) %}
+               <Entry>
+                     <Instance> {{ cur_action }} {{position_prefix}} {{src_idx}} - </Instance>
+                     <ProbTable>
+                     {{transition_row}}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+               {% endfor %}
+               {% endfor %}
+            {% endif %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         {% for b_i in range(NUM_BOXES) %}
+         <CondProb>
+            <Var> {{ bpconstants.minobs_symbol(b_i) }} </Var>
+            <Parent>{{ bpconstants.action_var() }}{% for a_i in range(NUM_AGENTS) %} {{ time_one(AGENTS[a_i]) }}{% endfor %} {{ time_one(BOXES[b_i]) }}</Parent>
+            {% set agents_all_pos = create_combination_template(NUM_AGENTS) %}
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * {{ agents_all_pos }} * null </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               {% for a_i in range(NUM_AGENTS) %}
+               <Entry>
+                  <Instance> {{ bpconstants.sense_action(b_i, a_i) }} {{ agents_all_pos }} * no </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ bpconstants.sense_action(b_i, a_i) }} {{ agents_all_pos }} * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               {% set agent_pos_template =  create_combination_template(NUM_AGENTS, a_i) %}
+               {% for t in range(0,NUM_TILES) %}
+               {% set agent_pos = cast_to_template(agent_pos_template, (t|string)) %}
+               <Entry>
+                  <Instance> {{ bpconstants.sense_action(b_i, a_i) }} {{agent_pos}} {{t}} yes </Instance>
+                  <ProbTable> {{ PROB_OBS_BOX|round(3) }} </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ bpconstants.sense_action(b_i, a_i) }} {{agent_pos}} {{t}} no </Instance>
+                  <ProbTable> {{ (1 - PROB_OBS_BOX)|round(3) }} </ProbTable>
+               </Entry>
+               {% endfor %}
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+      </ObsFunction>
+      <RewardFunction>
+        {% for a_i in range(NUM_AGENTS) %}
+        {% set cur_bias = AGENTS_BIAS[a_i] %}
+         <Func>
+            <Var> {{ bpconstants.agent_cost_var(a_i) }} </Var>
+            <Parent> {{ bpconstants.action_var() }} </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ bpconstants.idle_action() }} </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               {% for d in DIRECTION_SYMBOLS %}
+               <Entry>
+                  <Instance> {{ bpconstants.move_action(d, a_i) }} </Instance>
+                  <ValueTable> {{ MOVE_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% endfor %}
+               {% for b_i in range(NUM_BOXES) %}
+               {% if b_i in HEAVY_BOXES %}
+               {% for a1_i, a2_i in AGENTS_PAIRS %}
+               {% if a_i == a1_i or a_i == a2_i %}
+               {% for d in DIRECTION_SYMBOLS %}
+               <Entry>
+                  <Instance> {{ bpconstants.cpush_action(d, b_i, a1_i, a2_i) }} </Instance>
+                  <ValueTable> {{ CPUSH_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% endfor %}
+               {% endif %}
+               {% endfor %}
+               {% elif b_i not in HEAVY_BOXES %}
+               {% for d in DIRECTION_SYMBOLS %}
+               <Entry>
+                  <Instance> {{ bpconstants.push_action(d, b_i, a_i) }} </Instance>
+                  <ValueTable> {{ PUSH_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% endfor %}
+               {% endif %}
+               <Entry>
+                  <Instance> {{ bpconstants.sense_action(b_i, a_i) }} </Instance>
+                  <ValueTable> {{ SENSE_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </Func>
+         {% endfor %}
+
+         {% for b_i in range(NUM_BOXES) %}
+         {% set TARGET_INDICES = calculate_target_indices(TARGET_TILES[b_i % (TARGET_TILES|length)], WIDTH) %}
+         <Func>
+            <Var> {{ bpconstants.box_reward_var(b_i) }} </Var>
+            <Parent> {{ time_zero(BOXES[b_i]) }} {{ time_one(BOXES[b_i]) }} </Parent>
+            <Parameter type="TBL">
+               {% for target_tile_idx in TARGET_INDICES %}
+               <Entry>
+                  <Instance> - {{target_tile_idx}} </Instance>
+                  <ValueTable>{% for src_idx in range(0, NUM_TILES) %}{% if src_idx in TARGET_INDICES %} 0 {% else %} {{ GOAL_REWARD }} {% endif %}{% endfor %}</ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{target_tile_idx}} - </Instance>
+                  <ValueTable>{% for src_idx in range(0, NUM_TILES) %}{% if src_idx in TARGET_INDICES %} 0 {% else %} {{ UNGOAL_PENALTY }} {% endif %}{% endfor %}</ValueTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </Func>
+         {% endfor %}
+      </RewardFunction>
+</pomdpx>

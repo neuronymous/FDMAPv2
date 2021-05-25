@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx><Description>
+      DecTiger domain. 2 agents.
+      </Description>
+<Discount>0.99</Discount>
+<Variable><StateVar vnamePrev="agent1_0" vnameCurr="agent1_1"><ValueEnum>0 1</ValueEnum>
+</StateVar>
+<StateVar vnamePrev="agent2_0" vnameCurr="agent2_1"><ValueEnum>0 1</ValueEnum>
+</StateVar>
+<StateVar vnamePrev="tiger_0" vnameCurr="tiger_1"><ValueEnum>0 1</ValueEnum>
+</StateVar>
+<ObsVar vname="obs_agent2"><ValueEnum>yes no null</ValueEnum>
+</ObsVar>
+<ActionVar vname="action_var"><ValueEnum>move_left_agent1 move_left_agent2 idle move_right_agent1 move_right_agent2 listen_agent2 copen_agent1_agent2</ValueEnum>
+</ActionVar>
+<RewardVar vname="rminus_agent1"/>
+<RewardVar vname="rminus_agent2"/>
+<RewardVar vname="reward_shaping"/>
+</Variable>
+<InitialStateBelief><CondProb><Var>agent1_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>0</Instance>
+<ProbTable>1.0000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>agent2_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>1</Instance>
+<ProbTable>1.0000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>tiger_0</Var>
+<Parent>null</Parent>
+<Parameter type="TBL"><Entry><Instance>-</Instance>
+<ProbTable>0.5000 0.5000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</InitialStateBelief>
+<StateTransitionFunction><CondProb><Var>agent1_1</Var>
+<Parent>action_var agent1_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>move_left_agent1 - -</Instance>
+<ProbTable>1.0000 0
+1.0000 0</ProbTable>
+</Entry>
+<Entry><Instance>move_right_agent1 - -</Instance>
+<ProbTable>0 1.0000
+0 1.0000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>agent2_1</Var>
+<Parent>action_var agent2_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>move_left_agent2 - -</Instance>
+<ProbTable>1.0000 0
+1.0000 0</ProbTable>
+</Entry>
+<Entry><Instance>move_right_agent2 - -</Instance>
+<ProbTable>0 1.0000
+0 1.0000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+<CondProb><Var>tiger_1</Var>
+<Parent>action_var tiger_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* - -</Instance>
+<ProbTable>identity</ProbTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 * -</Instance>
+<ProbTable>0.5000 0.5000</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</StateTransitionFunction>
+<ObsFunction><CondProb><Var> obs_agent2 </Var>
+<Parent>action_var agent2_1 tiger_1</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * null</Instance>
+<ProbTable>1.0000</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 * * no</Instance>
+<ProbTable>0.8500</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 * * yes</Instance>
+<ProbTable>0.1500</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 * * null</Instance>
+<ProbTable>0</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 0 0 yes</Instance>
+<ProbTable>0.8500</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 0 0 no</Instance>
+<ProbTable>0.1500</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 1 1 yes</Instance>
+<ProbTable>0.8500</ProbTable>
+</Entry>
+<Entry><Instance>listen_agent2 1 1 no</Instance>
+<ProbTable>0.1500</ProbTable>
+</Entry>
+</Parameter>
+</CondProb>
+</ObsFunction>
+<RewardFunction><Func><Var> rminus_agent1 </Var>
+<Parent>action_var agent1_0 agent2_0 tiger_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>move_left_agent1 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>move_right_agent1 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 0 0 0</Instance>
+<ValueTable>-25.0000</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 1 1 1</Instance>
+<ValueTable>-25.0000</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+<Func><Var> rminus_agent2 </Var>
+<Parent>action_var agent1_0 agent2_0 tiger_0</Parent>
+<Parameter type="TBL"><Entry><Instance>* * * *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>listen_agent2 * * *</Instance>
+<ValueTable>-1.0000</ValueTable>
+</Entry>
+<Entry><Instance>move_left_agent2 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>move_right_agent2 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 * * *</Instance>
+<ValueTable>-0.0100</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 0 0 0</Instance>
+<ValueTable>-25.0000</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 1 1 1</Instance>
+<ValueTable>-25.0000</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+<Func><Var>reward_shaping</Var>
+<Parent>action_var agent1_0 agent2_0 tiger_0</Parent>
+<Parameter type="TBL"><Entry><Instance>copen_agent1_agent2 * * *</Instance>
+<ValueTable>-59.8159</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 1 1 *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 0 0 *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 1 1 *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 0 0 *</Instance>
+<ValueTable>0</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 1 1 0</Instance>
+<ValueTable>30.7307</ValueTable>
+</Entry>
+<Entry><Instance>copen_agent1_agent2 0 0 1</Instance>
+<ValueTable>28.0853</ValueTable>
+</Entry>
+</Parameter>
+</Func>
+</RewardFunction>
+</pomdpx>

@@ -1,0 +1,41 @@
+digraph G
+{
+root [label="Y (1,2,5,0,0) 0.25\lA (\naction_sense_box2_agent3)\l" shape=doublecircle labeljust="l"];
+x0row56 [label="Y (1,2,5,0,1) 0.4\lA (\naction_sense_box2_agent1)\l"];
+x0row62 [label="Y (1,2,5,0,1) 0.5\lA (\naction_push_left_box2_agent1)\l"];
+x0row84 [label="Y (1,2,5,0,0) 0.4\lA (\naction_sense_box2_agent1)\l"];
+x0row106 [label="Y (1,2,5,5,0) 1\lA (\naction_push_up_box1_agent3)\l"];
+x0row107 [label="Y (1,2,5,0,0) 1\lA (action_idle)\l"];
+x0row161 [label="Y (1,2,5,0,0) 0.8\lA (\naction_sense_box1_agent1)\l"];
+x0row115 [label="Y (1,2,5,2,0) 0.8\lA (\naction_sense_box1_agent2)\l"];
+x0row127 [label="Y (1,2,5,2,0) 1\lA (\naction_push_left_box1_agent2)\l"];
+x0row9 [label="Y (1,2,5,0,5) 0.5\lA (\naction_push_up_box2_agent3)\l"];
+x0row10 [label="Y (1,2,5,0,0) 0.5\lA (\naction_sense_box1_agent3)\l"];
+x0row139 [label="Y (1,2,5,1,0) 0.8\lA (\naction_sense_box1_agent1)\l"];
+x0row25 [label="Y (1,2,5,0,2) 0.4\lA (\naction_sense_box2_agent2)\l"];
+x0row147 [label="Y (1,2,5,1,0) 1\lA (\naction_push_left_box1_agent1)\l"];
+x0row36 [label="Y (1,2,5,0,2) 0.5\lA (\naction_push_left_box2_agent2)\l"];
+root -> x0row9 [label="o (null,yes) 0.5\l"];
+root -> x0row10 [label="o (null,no) 0.5\l"];
+x0row9 -> x0row25 [label="o (null,null) 1\l"];
+x0row25 -> x0row36 [label="o (null,yes) 0.8\l"];
+x0row25 -> x0row9 [label="o (null,no) 0.2\l"];
+x0row36 -> x0row56 [label="o (null,null) 1\l"];
+x0row56 -> x0row62 [label="o (null,yes) 0.8\l"];
+x0row56 -> x0row36 [label="o (null,no) 0.2\l"];
+x0row62 -> x0row84 [label="o (null,null) 1\l"];
+x0row84 -> x0row62 [label="o (null,yes) 0.2\l"];
+x0row84 -> x0row10 [label="o (null,no) 0.8\l"];
+x0row10 -> x0row106 [label="o (yes,null) 0.5\l"];
+x0row10 -> x0row107 [label="o (no,null) 0.5\l"];
+x0row106 -> x0row115 [label="o (null,null) 1\l"];
+x0row115 -> x0row127 [label="o (yes,null) 0.8\l"];
+x0row115 -> x0row106 [label="o (no,null) 0.2\l"];
+x0row127 -> x0row139 [label="o (null,null) 1\l"];
+x0row139 -> x0row147 [label="o (yes,null) 0.8\l"];
+x0row139 -> x0row127 [label="o (no,null) 0.2\l"];
+x0row147 -> x0row161 [label="o (null,null) 1\l"];
+x0row161 -> x0row147 [label="o (yes,null) 0.2\l"];
+x0row161 -> x0row107 [label="o (no,null) 0.8\l"];
+x0row107 -> x0row107 [label="o (null,null) 1\l"];
+}

@@ -1,0 +1,505 @@
+{% set NUM_TILES = WIDTH*HEIGHT %}
+{% set CAR_ACTIONS = actions_per_agent(NUM_CARS, ROCKS_POSITIONS, CONTROL_AREAS) %}
+{% set POS_VALUES = range(0,NUM_TILES)| join(' ') %}
+{% set TILES_LIST = calculate_all_tiles(WIDTH, HEIGHT) %}
+{% set NEIGHBORS_DICT = calculate_neighbors_dict(WIDTH, HEIGHT) %}
+{% set DIRECTION_MATRICES = calculate_direction_matrices((WIDTH/2 +1)|int, HEIGHT, PROB_MOVE) %}
+<?xml version="1.0" encoding="UTF-8"?>
+<ProbModelXML formatVersion="0.2.0">
+    <ProbNet type="DEC_POMDP">
+        <Agents>
+            {% for car in CARS %}
+            <Agent name="{{ car }}"/>
+            {% endfor %}
+        </Agents>
+        <Variables>
+
+            {% for i in range(NUM_CARS) %}
+            {% set car = rocksamping_constants.car_symbol(i) %}
+            <Variable name="{{ car }}" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    {% for p in CONTROL_AREAS[i] %}
+                    <State name="{{ p }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="{{ car }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for p in CONTROL_AREAS[i] %}
+                    <State name="{{ p }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_ROCKS) %}
+            {% set rock = rocksamping_constants.rock_symbol(i) %}
+            <Variable name="{{ rock }}" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    {% for v in rocksamping_constants.ROCK_QUALITY_SYMBOLS %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="{{ rock }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for v in rocksamping_constants.ROCK_QUALITY_SYMBOLS %}
+                    <State name="{{ v }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            {% set car = rocksamping_constants.car_symbol(i) %}
+            <Variable name="action_{{ car }}" timeSlice="0" type="finiteStates" role="decision">
+                <Agent name="{{ car }}" />
+                <States>
+                    {% for a in CAR_ACTIONS[i] %}
+                    <State name="{{ a }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            <Variable name="action_{{ car }}" timeSlice="1" type="finiteStates" role="decision">
+                <Agent name="{{ car }}" />
+                <States>
+                    {% for a in CAR_ACTIONS[i] %}
+                    <State name="{{ a }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    {% for o in rocksamping_constants.ROCK_OBSERVATION_SYMBOLS %}
+                    <State name="{{ o }}" />
+                    {% endfor %}
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            <Variable name="{{ rocksamping_constants.car_cost_var(i) }}" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            <Variable name="{{ rocksamping_constants.rock_rewards_var(i) }}" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+            {% if rock_tile_idx in CONTROL_AREAS[i] %}
+            <Variable name="{{ rocksamping_constants.rock_penalties_var(j, i) }}" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+        </Variables>
+
+        <Links>
+        {% for car in CARS %}
+            <Link directed="true">
+                <Variable name="{{ car }}" timeSlice="0" />
+                <Variable name="{{ car }}" timeSlice="1" />
+            </Link>
+        {% endfor %}
+
+        {% for rock in ROCKS %}
+            <Link directed="true">
+                <Variable name="{{ rock }}" timeSlice="0" />
+                <Variable name="{{ rock }}" timeSlice="1" />
+            </Link>
+        {% endfor %}
+
+        {% for i in range(NUM_CARS) %}
+        {% set car = rocksamping_constants.car_symbol(i) %}
+            <Link directed="true">
+                <Variable name="action_{{ car }}" timeSlice="0" />
+                <Variable name="{{ car }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                <Variable name="action_{{ car }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_{{ car }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ car }}" timeSlice="1" />
+                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+            </Link>
+
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+            {% if rock_tile_idx in CONTROL_AREAS[i] %}
+            {% set rock = rocksamping_constants.rock_symbol(j) %}
+
+            <Link directed="true">
+                <Variable name="{{ rock }}" timeSlice="1" />
+                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_{{ car }}" timeSlice="0" />
+                <Variable name="{{ rock }}" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ car }}" timeSlice="0" />
+                <Variable name="{{ rock }}" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ car }}" timeSlice="0" />
+                <Variable name="{{ rock }}" timeSlice="1" />
+            </Link>
+            {% endif %}
+        {% endfor %}
+        {% endfor %}
+
+        {% for i in range(NUM_CARS) %}
+        {% set car = rocksamping_constants.car_symbol(i) %}
+            <Link directed="true">
+                <Variable name="action_{{ car }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.car_cost_var(i) }}" timeSlice="0" />
+            </Link>
+        {% endfor %}
+
+        {% for i in range(NUM_CARS) %}
+        {% set car = rocksamping_constants.car_symbol(i) %}
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock_tile_idx = ROCKS_POSITIONS[j] %}
+            {% if rock_tile_idx in CONTROL_AREAS[i] %}
+            {% set rock = rocksamping_constants.rock_symbol(j) %}
+            <Link directed="true">
+                <Variable name="action_{{ car }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.rock_penalties_var(j, i) }}" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="{{ car }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.rock_penalties_var(j, i) }}" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="{{ rock }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.rock_penalties_var(j, i) }}" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ rock }}" timeSlice="0" />
+                <Variable name="{{ rocksamping_constants.rock_rewards_var(i) }}" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="{{ rock }}" timeSlice="1" />
+                <Variable name="{{ rocksamping_constants.rock_rewards_var(i) }}" timeSlice="0" />
+            </Link>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        </Links>
+
+        <Potentials>
+            {% for i in range(NUM_CARS) %}
+            {% set car = CARS[i] %}
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ car }}" timeSlice="0" />
+                </Variables>
+                {% set probs = [] %}
+                {% for tile_idx in CONTROL_AREAS[i] %}
+                {%- if tile_idx in CARS_POSITIONS[i] -%}
+                {{ probs.append(CARS_POSITIONS[i][tile_idx])|default('', true) }}
+                {%- else -%}
+                {{ probs.append(0)|default('', true) }}
+                {%- endif -%}
+                {% endfor %}
+                <Values>{{probs|join(' ')}}</Values>
+            </Potential>
+            {% endfor %}
+
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock = ROCKS[j] %}
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ rock }}" timeSlice="0" />
+                </Variables>
+                {% set prob = ROCKS_GOOD_PROBS[j] %}
+                <Values>{{ prob|round(3) }} {{ (1.0 - prob)|round(3) }}</Values>
+            </Potential>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            {% set car = CARS[i] %}
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                  <Variable name="{{ car }}" timeSlice="1" />
+                  <Variable name="{{ car }}" timeSlice="0" />
+                  <Variable name="action_{{ car }}" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_{{ car }}" timeSlice="0" />
+                <Branches>
+                    {% for direction_symbol in rocksamping_constants.DIRECTION_SYMBOLS %}
+                    <Branch>
+                        <States>
+                            <State name="{{rocksamping_constants.move_action(direction_symbol, i)}}" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ car }}" timeSlice="1" />
+                                <Variable name="{{ car }}" timeSlice="0" />
+                            </Variables>
+                            <Values> {{ matrix_to_string(DIRECTION_MATRICES[direction_symbol]) }} </Values>
+                        </Potential>
+                    </Branch>
+                    {% endfor %}
+                    <Branch>
+                        <States>
+                            {% for action in CAR_ACTIONS[i] %}
+                            {% if not rocksamping_constants.is_move_action(action) %}
+                            <State name="{{ action }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ car }}" timeSlice="1" />
+                                <Variable name="{{ car }}" timeSlice="0" />
+                            </Variables>
+                            <Values> {{ matrix_to_string(get_identity_matrix(CONTROL_AREAS[i]|length)) }} </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            {% endfor %}
+
+            {% for i in range(NUM_ROCKS) %}
+            {% set rock = ROCKS[i] %}
+            {% set rock_pos = ROCKS_POSITIONS[i] %}
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                    <Variable name="{{ rock }}" timeSlice="1" />
+                    <Variable name="{{ rock }}" timeSlice="0" />
+                    {% for j in range(NUM_CARS) %}
+                    {% if rock_pos in CONTROL_AREAS[j] %}
+                    {% set car = CARS[j] %}
+                    <Variable name="{{ car }}" timeSlice="0" />
+                    {% endif %}
+                    {% endfor %}
+                    {% for j in range(NUM_CARS) %}
+                    {% if rock_pos in CONTROL_AREAS[j] %}
+                    {% set car = CARS[j] %}
+                    <Variable name="action_{{ car }}" timeSlice="0" />
+                    {% endif %}
+                    {% endfor %}
+                </Variables>
+                <Values>
+                {{ pgmx_sample_matrix(i, ROCKS_POSITIONS, CONTROL_AREAS, CAR_ACTIONS, PROB_SAMPLE) }}
+                </Values>
+            </Potential>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            {% set car = CARS[i] %}
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                    <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                    <Variable name="{{ car }}" timeSlice="1" />
+                    {% for j in range(NUM_ROCKS) %}
+                    {% set rock_pos = ROCKS_POSITIONS[j] %}
+                    {% if rock_pos in CONTROL_AREAS[i] %}
+                    {% set rock = ROCKS[j] %}
+                    <Variable name="{{ rock }}" timeSlice="1" />
+                    {% endif %}
+                    {% endfor %}
+                    <Variable name="action_{{ car }}" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_{{ car }}" timeSlice="0" />
+                <Branches>
+                    {% for j in range(NUM_ROCKS) %}
+                    {% set rock_pos = ROCKS_POSITIONS[j] %}
+                    {% if rock_pos in CONTROL_AREAS[i] %}
+                    {% set rock = ROCKS[j] %}
+                    <Branch>
+                        <States>
+                            <State name="{{ rocksamping_constants.sense_action(j, i) }}" />
+                        </States>
+                        <Potential type="Tree/ADD" role="conditionalProbability">
+                            <Variables>
+                                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                                <Variable name="{{ car }}" timeSlice="1" />
+                                <Variable name="{{ rock }}" timeSlice="1" />
+                            </Variables>
+                            <TopVariable name="{{ rock }}" timeSlice="1" />
+                            <Branches>
+                                <Branch>
+                                    <States>
+                                        <State name="{{ rocksamping_constants.good_quality() }}" />
+                                    </States>
+                                    <Potential type="Table">
+                                        <Variables>
+                                            <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                                        </Variables>
+                                        <Values> {{ PROB_SENSE|round(3) }} {{ (1-PROB_SENSE)|round(3) }} 0.0 </Values>
+                                    </Potential>
+                                </Branch>
+                                <Branch>
+                                    <States>
+                                        <State name="{{ rocksamping_constants.bad_quality() }}" />
+                                    </States>
+                                    <Potential type="Table">
+                                        <Variables>
+                                            <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                                        </Variables>
+                                        <Values> {{ (1-PROB_SENSE)|round(3) }} {{ PROB_SENSE|round(3) }} 0.0 </Values>
+                                    </Potential>
+                                </Branch>
+                            </Branches>
+                        </Potential>
+                    </Branch>
+                    {% endif %}
+                    {% endfor %}
+                    <Branch>
+                        <States>
+                            {% for action in CAR_ACTIONS[i] %}
+                            {% if action != rocksamping_constants.is_sense_action(action) %}
+                            <State name="{{ action }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="{{ rocksamping_constants.minobs_symbol(i) }}" timeSlice="1" />
+                            </Variables>
+                            <Values> 0.0 0.0 1.0  </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            {% endfor %}
+
+            {% for i in range(NUM_CARS) %}
+            {% set car = CARS[i] %}
+            {% set cur_bias = CARS_BIAS[i] %}
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="{{ rocksamping_constants.car_cost_var(i) }}" timeSlice="0" />
+                <Variables>
+                    <Variable name="action_{{ car }}" timeSlice="0" />
+                </Variables>
+                <Values>{% for action in CAR_ACTIONS[i] %}{% if rocksamping_constants.is_move_action(action) %} {{ cur_bias*MOVE_COST }} {% elif rocksamping_constants.is_private_sample_action(action) or rocksamping_constants.is_shared_sample_action(action) %} {{ cur_bias*SAMPLE_COST }} {% elif rocksamping_constants.is_sense_action(action) %} {{ cur_bias*SENSE_COST }} {% elif "sense" in action %} {{ cur_bias*SENSE_COST }} {% else %} 0 {% endif %}{% endfor %}</Values>
+            </Potential>
+
+             <Potential type="Table" role="utility">
+                <UtilityVariable name="{{ rocksamping_constants.rock_rewards_var(i) }}" timeSlice="0" />
+                <Variables>
+                    {% for j in range(NUM_ROCKS) %}
+                    {% set rock_pos = ROCKS_POSITIONS[j] %}
+                    {% if rock_pos in CONTROL_AREAS[i] %}
+                    {% set rock = ROCKS[j] %}
+                    <Variable name="{{ rock }}" timeSlice="0"/>
+                    {% endif %}
+                    {% endfor %}
+                    {% for j in range(NUM_ROCKS) %}
+                    {% set rock_pos = ROCKS_POSITIONS[j] %}
+                    {% if rock_pos in CONTROL_AREAS[i] %}
+                    {% set rock = ROCKS[j] %}
+                    <Variable name="{{ rock }}" timeSlice="1"/>
+                    {% endif %}
+                    {% endfor %}
+                </Variables>
+                <Values>{{ generate_rock_rewards_matrix(ROCKS_POSITIONS, CONTROL_AREAS[i], GOOD_SAMPLE_REWARD) }}</Values>
+            </Potential>
+
+            {% for j in range(NUM_ROCKS) %}
+            {% set rock_pos = ROCKS_POSITIONS[j] %}
+            {% if rock_pos in CONTROL_AREAS[i] %}
+            {% set rock = ROCKS[j] %}
+            <Potential type="Tree/ADD" role="utility">
+                <UtilityVariable name="{{ rocksamping_constants.rock_penalties_var(j, i) }}" timeSlice="0" />
+                <Variables>
+                    <Variable name="{{ car }}" timeSlice="0" />
+                    <Variable name="{{ rock }}" timeSlice="0" />
+                    <Variable name="action_{{ car }}" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_{{ car }}" timeSlice="0" />
+                <Branches>
+                    {% if rock_pos in SHARED_ROCKS_POSITIONS %}
+                    {% set action = rocksamping_constants.shared_sample_action(i) %}
+                    {% else %}
+                    {% set action = rocksamping_constants.private_sample_action(i) %}
+                    {% endif %}
+                    <Branch>
+                        <States>
+                           <State name="{{ action }}" />
+                        </States>
+                        <Potential type="Tree/ADD">
+                            <Variables>
+                                <Variable name="{{ car }}" timeSlice="0" />
+                                <Variable name="{{ rock }}" timeSlice="0" />
+                            </Variables>
+                            <TopVariable name="{{ car }}" timeSlice="0" />
+                            <Branches>
+                                <Branch>
+                                    <States>
+                                        <State name="{{ rock_pos }}" />
+                                    </States>
+                                    <Potential type="Table">
+                                        <Variables>
+                                            <Variable name="{{ rock }}" timeSlice="0" />
+                                        </Variables>
+                                        <Values> 0.0 {{ BAD_SAMPLE_PENALTY }}</Values>
+                                    </Potential>
+                                </Branch>
+                                 <Branch>
+                                    <States>
+                                    {% for p in CONTROL_AREAS[i] %}
+                                    {% if p != rock_pos %}
+                                        <State name="{{ p }}" />
+                                    {% endif %}
+                                    {% endfor %}
+                                    </States>
+                                    <Potential type="Table">
+                                        <Values> 0.0 </Values>
+                                    </Potential>
+                                 </Branch>
+                            </Branches>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                    <States>
+                        {% for a in CAR_ACTIONS[i] %}
+                        {% if a != action %}
+                        <State name="{{ a }}" />
+                        {% endif %}
+                        {% endfor %}
+                    </States>
+                    <Potential type="Table">
+                        <Values> 0.0 </Values>
+                    </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </Potentials>
+    </ProbNet>
+</ProbModelXML>

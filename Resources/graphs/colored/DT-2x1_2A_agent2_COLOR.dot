@@ -1,0 +1,32 @@
+digraph G {
+root [color=black, fillcolor=cadetblue1, label="Y (0,1,0) 0.5\lA (listen_agent2)\l", labeljust="l", shape=doublecircle, style=filled];
+x0row9 [color=black, fillcolor=cadetblue1, label="Y (0,0,1) 0.97\lA (\ncopen_agent1_agent2)\l", style=filled];
+x0row12 [color=black, fillcolor=cadetblue1, label="Y (1,0,0) 0.85\lA (\nmove_right_agent2)\l", style=filled];
+x0row14 [color=black, fillcolor=cadetblue1, label="Y (1,1,0) 0.85\lA (\ncopen_agent1_agent2)\l", style=filled];
+x0row5 [color=black, fillcolor=cadetblue1, label="Y (0,0,1) 0.85\lA (\ncopen_agent1_agent2)\l", style=filled];
+x0row6 [color=black, fillcolor=cadetblue1, label="Y (1,1,1) 0.85\lA (listen_agent2)\l", style=filled];
+x0row7 [color=black, fillcolor=cadetblue1, label="Y (0,1,1) 0.97\lA (\nmove_left_agent2)\l", style=filled];
+x0row11 [color=black, fillcolor=coral, label="Y (0,0,0) 0.85\lA (\nmove_right_agent1)\l", style=filled];
+x0row1 [color=black, fillcolor=cadetblue1, label="Y (0,0,0) 0.5\lA (listen_agent2)\l", style=filled];
+x0row2 [color=black, fillcolor=cadetblue1, label="Y (1,1,0) 0.5\lA (listen_agent2)\l", style=filled];
+x0row3 [color=black, fillcolor=cadetblue1, label="Y (0,1,1) 0.85\lA (\nmove_left_agent2)\l", style=filled];
+x0row4 [color=black, fillcolor=coral, label="Y (0,1,0) 0.85\lA (\nmove_right_agent1)\l", style=filled];
+x0row17 [color=black, fillcolor=coral, label="Y (1,1,1) 0.97\lA (\nmove_left_agent1)\l", style=filled];
+root -> x0row3  [label="o (yes) 0.5\l"];
+root -> x0row4  [label="o (no) 0.5\l"];
+x0row3 -> x0row5  [label="o (null) 1\l"];
+x0row5 -> x0row1  [label="o (null) 1\l"];
+x0row1 -> x0row11  [label="o (yes) 0.5\l"];
+x0row1 -> x0row5  [label="o (no) 0.5\l"];
+x0row11 -> x0row12  [label="o (null) 1\l"];
+x0row12 -> x0row14  [label="o (null) 1\l"];
+x0row14 -> x0row2  [label="o (null) 1\l"];
+x0row2 -> x0row6  [label="o (yes) 0.5\l"];
+x0row2 -> x0row14  [label="o (no) 0.5\l"];
+x0row6 -> x0row17  [label="o (yes) 0.745\l"];
+x0row6 -> x0row2  [label="o (no) 0.255\l"];
+x0row17 -> x0row7  [label="o (null) 1\l"];
+x0row7 -> x0row9  [label="o (null) 1\l"];
+x0row9 -> x0row1  [label="o (null) 1\l"];
+x0row4 -> x0row14  [label="o (null) 1\l"];
+}

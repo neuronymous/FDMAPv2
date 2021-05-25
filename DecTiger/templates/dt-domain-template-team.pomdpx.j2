@@ -1,0 +1,271 @@
+{% set NUM_TILES = WIDTH %}
+{% set ACTION_LIST = calculate_action_list(NUM_AGENTS) %}
+{% set POS_VALUES = range(0,NUM_TILES)| join(' ') %}
+{% set TILES_LIST = calculate_all_tiles(WIDTH, 1) %}
+{% set AGENTS_PAIRS = calculate_pairs(NUM_AGENTS) %}
+{% set NEIGHBORS_DICT = calculate_neighbors_dict(WIDTH, 1) %}
+{% set DIRECTION_MATRICES = calculate_direction_matrices(WIDTH, 1, MOVE_PROB) %}
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="BoxPushing"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      DecTiger domain. {{NUM_AGENTS}} agents.
+      </Description>
+      <Discount> {{DISCOUNT}} </Discount>
+      <NumAgents> {{NUM_AGENTS}} </NumAgents>
+      <Variable>
+
+         {% for agent in AGENTS %}
+         <StateVar vnamePrev="{{ time_zero(agent) }}" vnameCurr="{{ time_one(agent) }}" fullyObs="false">
+            <ValueEnum> {{ POS_VALUES }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         <StateVar vnamePrev="{{ time_zero(TIGER) }}" vnameCurr="{{ time_one(TIGER) }}" fullyObs="false">
+            <ValueEnum> {{ POS_VALUES }} </ValueEnum>
+         </StateVar>
+
+         {% for a_i in range(NUM_AGENTS) %}
+         {% set agent = AGENTS[a_i] %}
+         <ObsVar vname="{{ constants.obs_symbol(agent) }}">
+            <ValueEnum>{{ constants.OBS_VALUES|join(' ') }}</ValueEnum>
+         </ObsVar>
+         {% endfor %}
+
+         <ActionVar vname="{{ constants.action_var() }}">
+            <ValueEnum> {{ ACTION_LIST|join(' ') }} </ValueEnum>
+         </ActionVar>
+
+         {% for a_i in range(NUM_AGENTS) %}
+         <RewardVar vname="{{ constants.agent_rminus_var(a_i) }}" />
+         {% endfor %}
+         <RewardVar vname="{{ constants.tiger_reward_variable() }}" />
+
+      </Variable>
+
+      <InitialStateBelief>
+
+         {% for a_i in range(NUM_AGENTS) %}
+         <CondProb>
+            <Var>{{ time_zero(AGENTS[a_i]) }}</Var>
+            <Parent>{{ pomdpxconstants.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> {{a_i}} </Instance>
+                    <ProbTable> 1.0 </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         <CondProb>
+            <Var>{{ time_zero(TIGER) }}</Var>
+            <Parent>{{ pomdpxconstants.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> - </Instance>
+                    <ProbTable> {% for i in range(NUM_TILES) %} {{ (1 / NUM_TILES)|round(3) }}  {% endfor %} </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         {% for a_i in range(NUM_AGENTS) %}
+         {% set agent = AGENTS[a_i] %}
+         <CondProb>
+            <Var>{{ time_one(agent) }}</Var>
+            <Parent>{{ constants.action_var() }} {{ time_zero(agent) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               {% for direction_symbol in constants.DIRECTION_SYMBOLS %}
+               <Entry>
+                     <Instance> {{ constants.move_action(direction_symbol, a_i) }} - - </Instance>
+                     <ProbTable>
+                     {{ DIRECTION_MATRICES[direction_symbol] }}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         <CondProb>
+            <Var>{{ time_one(TIGER) }}</Var>
+            <Parent> {{ constants.action_var() }} {{ time_zero(TIGER) }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     {% set position_prefix = '* ' * NUM_AGENTS %}
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               {% for a_i in range(NUM_AGENTS) %}
+               {% set cur_action = constants.open_action(a_i) %}
+               <Entry>
+                     <Instance> {{cur_action}} * - </Instance>
+                     <ProbTable>
+                     {% for i in range(NUM_TILES) %} {{ (1 / NUM_TILES)|round(3) }}  {% endfor %}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+
+               {% for a1_i, a2_i in AGENTS_PAIRS %}
+               {% set cur_action = constants.copen_action(a1_i, a2_i) %}
+               <Entry>
+                     <Instance> {{cur_action}} * - </Instance>
+                     <ProbTable>
+                     {% for i in range(NUM_TILES) %} {{ (1 / NUM_TILES)|round(3) }}  {% endfor %}
+                     </ProbTable>
+               </Entry>
+               {% endfor %}
+
+            </Parameter>
+         </CondProb>
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         {% for a_i in range(NUM_AGENTS) %}
+         {% set agent = AGENTS[a_i] %}
+         <CondProb>
+            <Var> {{ constants.obs_symbol(agent) }} </Var>
+            <Parent>{{ constants.action_var() }} {{ time_one(AGENTS[a_i]) }} {{ time_one(TIGER) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * {{ constants.NULL_OBS }} </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} * * {{ constants.NO_OBS }} </Instance>
+                  <ProbTable> {{ LISTEN_PROB|round(3) }} </ProbTable>
+               </Entry>
+                <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} * * {{ constants.YES_OBS }} </Instance>
+                  <ProbTable> {{ (1-LISTEN_PROB)|round(3) }} </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} * * {{ constants.NULL_OBS }} </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               {% for t in range(0,NUM_TILES) %}
+               <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} {{t}} {{t}} {{ constants.YES_OBS }} </Instance>
+                  <ProbTable> {{ LISTEN_PROB|round(3) }} </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} {{t}} {{t}} {{ constants.NO_OBS }} </Instance>
+                  <ProbTable> {{ (1 - LISTEN_PROB)|round(3) }} </ProbTable>
+               </Entry>
+               {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+      </ObsFunction>
+      <RewardFunction>
+        {% for a_i in range(NUM_AGENTS) %}
+        {% set cur_bias = AGENTS_BIAS[a_i] %}
+        {% set combination_template = create_combination_template(NUM_AGENTS, a_i) %}
+        {% set all_positions = cast_to_template(combination_template, '*') %}
+         <Func>
+            <Var> {{ constants.agent_rminus_var(a_i) }} </Var>
+            <Parent> {{ constants.action_var() }} {% for a_i in range(NUM_AGENTS) %} {{ time_zero(AGENTS[a_i]) }}{% endfor %} {{ time_zero(TIGER) }}  </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * {{ all_positions }} * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ constants.listen_action(a_i) }} {{ all_positions }} * </Instance>
+                  <ValueTable> {{ LISTEN_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% for d in DIRECTION_SYMBOLS %}
+               <Entry>
+                  <Instance> {{ constants.move_action(d, a_i) }} {{ all_positions }} * </Instance>
+                  <ValueTable> {{ MOVE_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% endfor %}
+               {% for agent_pos in range(0,NUM_TILES) %}
+               {% for tiger_pos in range(0,NUM_TILES) %}
+               {% set position_prefix = cast_to_template(combination_template, (agent_pos|string)) %}
+               {% if agent_pos == tiger_pos %}
+               <Entry>
+                  <Instance> {{ constants.open_action(a_i) }} {{ position_prefix }} {{ tiger_pos }} </Instance>
+                  <ValueTable> {{ OPEN_PENALTY*cur_bias }} </ValueTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
+               {% for a1_i, a2_i in AGENTS_PAIRS %}
+               {% set ma_combination_template = create_combination_template(NUM_AGENTS, a1_i, a2_i) %}
+               {% if a_i == a1_i or a_i == a2_i %}
+               <Entry>
+                  <Instance> {{ constants.copen_action(a1_i, a2_i) }} {{ all_positions }} * </Instance>
+                  <ValueTable> {{ COPEN_COST*cur_bias }} </ValueTable>
+               </Entry>
+               {% for agents_pos in range(0,NUM_TILES) %}
+               {% for tiger_pos in range(0,NUM_TILES) %}
+               {% set position_prefix = cast_to_template(ma_combination_template, (agents_pos|string)) %}
+               {% if agents_pos == tiger_pos %}
+               <Entry>
+                  <Instance> {{ constants.copen_action(a1_i, a2_i) }} {{ position_prefix }} {{ tiger_pos }} </Instance>
+                  <ValueTable> {{ COPEN_PENALTY*cur_bias }} </ValueTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
+               {% endif %}
+               {% endfor %}
+            </Parameter>
+         </Func>
+         {% endfor %}
+         <Func>
+            <Var> {{ constants.tiger_reward_variable() }} </Var>
+            <Parent> {{ constants.action_var() }}{% for a_i in range(NUM_AGENTS) %} {{ time_zero(AGENTS[a_i]) }} {% endfor %}{{ time_zero(TIGER) }} </Parent>
+            {% set combination_template = create_combination_template(NUM_AGENTS) %}
+            {% set all_positions = cast_to_template(combination_template, '*') %}
+            <Parameter type="TBL">
+                <Entry>
+                  <Instance> * {{ all_positions }} * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               {% for a_i in range(NUM_AGENTS) %}
+               {% for agent_pos in range(0,NUM_TILES) %}
+               {% for tiger_pos in range(0,NUM_TILES) %}
+               {% set cur_bias = AGENTS_BIAS[a_i] %}
+               {% set combination_template = create_combination_template(NUM_AGENTS, a_i) %}
+               {% set position_prefix = cast_to_template(combination_template, (agent_pos|string)) %}
+               {% if agent_pos != tiger_pos %}
+               <Entry>
+                  <Instance> {{ constants.open_action(a_i) }} {{ position_prefix }} {{ tiger_pos }} </Instance>
+                  <ValueTable> {{ OPEN_REWARD*cur_bias }} </ValueTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
+               {% endfor %}
+               {% for a1_i, a2_i in AGENTS_PAIRS %}
+               {% for agents_pos in range(0,NUM_TILES) %}
+               {% for tiger_pos in range(0,NUM_TILES) %}
+               {% set ma_combination_template = create_combination_template(NUM_AGENTS, a1_i, a2_i) %}
+               {% set position_prefix = cast_to_template(ma_combination_template, (agents_pos|string)) %}
+               {% if agents_pos != tiger_pos %}
+               <Entry>
+                  <Instance> {{ constants.copen_action(a1_i, a2_i) }} {{ position_prefix }} {{ tiger_pos }} </Instance>
+                  <ValueTable> {{ 2*COPEN_REWARD }} </ValueTable>
+               </Entry>
+               {% endif %}
+               {% endfor %}
+               {% endfor %}
+               {% endfor %}
+            </Parameter>
+         </Func>
+      </RewardFunction>
+</pomdpx>

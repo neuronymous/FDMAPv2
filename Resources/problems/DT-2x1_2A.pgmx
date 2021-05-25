@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProbModelXML formatVersion="0.2.0">
+    <ProbNet type="DEC_POMDP">
+        <Agents>
+            <Agent name="agent1"/>
+            <Agent name="agent2"/>
+        </Agents>
+        <Variables>
+
+            <Variable name="agent1" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+            <Variable name="agent1" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+            <Variable name="agent2" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+            <Variable name="agent2" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+
+            <Variable name="tiger" timeSlice="0" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+            <Variable name="tiger" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    <State name="0" />
+                    <State name="1" />
+                </States>
+            </Variable>
+
+
+            <Variable name="action_agent1" timeSlice="0" type="finiteStates" role="decision">
+                <Agent name="agent1" />
+                <States>
+                    <State name="idle" />
+                    <State name="move_left_agent1" />
+                    <State name="move_right_agent1" />
+                    <State name="listen_agent1" />
+                    <State name="open_agent1" />
+                    <State name="copen_agent1_agent2" />
+                </States>
+            </Variable>
+            <Variable name="action_agent1" timeSlice="1" type="finiteStates" role="decision">
+                <Agent name="agent1" />
+                <States>
+                    <State name="idle" />
+                    <State name="move_left_agent1" />
+                    <State name="move_right_agent1" />
+                    <State name="listen_agent1" />
+                    <State name="open_agent1" />
+                    <State name="copen_agent1_agent2" />
+                </States>
+            </Variable>
+            <Variable name="action_agent2" timeSlice="0" type="finiteStates" role="decision">
+                <Agent name="agent2" />
+                <States>
+                    <State name="idle" />
+                    <State name="move_left_agent2" />
+                    <State name="move_right_agent2" />
+                    <State name="listen_agent2" />
+                    <State name="open_agent2" />
+                    <State name="copen_agent1_agent2" />
+                </States>
+            </Variable>
+            <Variable name="action_agent2" timeSlice="1" type="finiteStates" role="decision">
+                <Agent name="agent2" />
+                <States>
+                    <State name="idle" />
+                    <State name="move_left_agent2" />
+                    <State name="move_right_agent2" />
+                    <State name="listen_agent2" />
+                    <State name="open_agent2" />
+                    <State name="copen_agent1_agent2" />
+                </States>
+            </Variable>
+
+            <Variable name="obs_agent1" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    <State name="yes" />
+                    <State name="no" />
+                    <State name="null" />
+                </States>
+            </Variable>
+            <Variable name="obs_agent2" timeSlice="1" type="finiteStates" role="chance">
+                <States>
+                    <State name="yes" />
+                    <State name="no" />
+                    <State name="null" />
+                </States>
+            </Variable>
+
+            <Variable name="cost_agent1" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+            <Variable name="cost_agent2" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+
+            <Variable name="reward_tiger" timeSlice="0" type="numeric" role="utility">
+                <States>
+                    <State name="0" />
+                </States>
+            </Variable>
+
+        </Variables>
+
+        <Links>
+            <Link directed="true">
+                <Variable name="agent1" timeSlice="0" />
+                <Variable name="agent1" timeSlice="1" />
+            </Link>
+            <Link directed="true">
+                <Variable name="agent2" timeSlice="0" />
+                <Variable name="agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="tiger" timeSlice="0" />
+                <Variable name="tiger" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent1" timeSlice="0" />
+                <Variable name="agent1" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="obs_agent1" timeSlice="1" />
+                <Variable name="action_agent1" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent1" timeSlice="0" />
+                <Variable name="obs_agent1" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent1" timeSlice="1" />
+                <Variable name="obs_agent1" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent1" timeSlice="0" />
+                <Variable name="tiger" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent1" timeSlice="0" />
+                <Variable name="tiger" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent1" timeSlice="0" />
+                <Variable name="tiger" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="tiger" timeSlice="1" />
+                <Variable name="obs_agent1" timeSlice="1" />
+            </Link>
+            <Link directed="true">
+                <Variable name="action_agent2" timeSlice="0" />
+                <Variable name="agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="obs_agent2" timeSlice="1" />
+                <Variable name="action_agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent2" timeSlice="0" />
+                <Variable name="obs_agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent2" timeSlice="1" />
+                <Variable name="obs_agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent2" timeSlice="0" />
+                <Variable name="tiger" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent2" timeSlice="0" />
+                <Variable name="tiger" timeSlice="0" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="agent2" timeSlice="0" />
+                <Variable name="tiger" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="tiger" timeSlice="1" />
+                <Variable name="obs_agent2" timeSlice="1" />
+            </Link>
+
+            <Link directed="true">
+                <Variable name="action_agent1" timeSlice="0" />
+                <Variable name="cost_agent1" timeSlice="0" />
+            </Link>
+             <Link directed="true">
+                <Variable name="action_agent1" timeSlice="0" />
+                <Variable name="reward_tiger" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="agent1" timeSlice="0" />
+                <Variable name="reward_tiger" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="action_agent2" timeSlice="0" />
+                <Variable name="cost_agent2" timeSlice="0" />
+            </Link>
+             <Link directed="true">
+                <Variable name="action_agent2" timeSlice="0" />
+                <Variable name="reward_tiger" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="agent2" timeSlice="0" />
+                <Variable name="reward_tiger" timeSlice="0" />
+            </Link>
+            <Link directed="true">
+                <Variable name="tiger" timeSlice="0" />
+                <Variable name="reward_tiger" timeSlice="0" />
+            </Link>
+
+        </Links>
+
+        <Potentials>
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="agent1" timeSlice="0" />
+                </Variables>
+                <Values>1.0 0.0</Values>
+            </Potential>
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="agent2" timeSlice="0" />
+                </Variables>
+                <Values>0.0 1.0</Values>
+            </Potential>
+             <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                  <Variable name="tiger" timeSlice="0" />
+                </Variables>
+                
+                
+                <Values>0.5 0.5</Values>
+            </Potential>
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                  <Variable name="agent1" timeSlice="1" />
+                  <Variable name="agent1" timeSlice="0" />
+                  <Variable name="action_agent1" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_agent1" timeSlice="0" />
+                <Branches>
+                    <Branch>
+                        <States>
+                            <State name="move_left_agent1" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent1" timeSlice="1" />
+                                <Variable name="agent1" timeSlice="0" />
+                            </Variables>
+                            <Values> 1.00	0.00
+1.00	0.00 </Values>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="move_right_agent1" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent1" timeSlice="1" />
+                                <Variable name="agent1" timeSlice="0" />
+                            </Variables>
+                            <Values> 0.00	1.00
+0.00	1.00 </Values>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="idle" />
+                            <State name="listen_agent1" />
+                            <State name="open_agent1" />
+                            <State name="copen_agent1_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent1" timeSlice="1" />
+                                <Variable name="agent1" timeSlice="0" />
+                            </Variables>
+                            <Values> 1.00	0.00
+0.00	1.00 </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                  <Variable name="agent2" timeSlice="1" />
+                  <Variable name="agent2" timeSlice="0" />
+                  <Variable name="action_agent2" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_agent2" timeSlice="0" />
+                <Branches>
+                    <Branch>
+                        <States>
+                            <State name="move_left_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent2" timeSlice="1" />
+                                <Variable name="agent2" timeSlice="0" />
+                            </Variables>
+                            <Values> 1.00	0.00
+1.00	0.00 </Values>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="move_right_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent2" timeSlice="1" />
+                                <Variable name="agent2" timeSlice="0" />
+                            </Variables>
+                            <Values> 0.00	1.00
+0.00	1.00 </Values>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="idle" />
+                            <State name="listen_agent2" />
+                            <State name="open_agent2" />
+                            <State name="copen_agent1_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="agent2" timeSlice="1" />
+                                <Variable name="agent2" timeSlice="0" />
+                            </Variables>
+                            <Values> 1.00	0.00
+0.00	1.00 </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+
+
+            <Potential type="Table" role="conditionalProbability">
+                <Variables>
+                    <Variable name="tiger" timeSlice="1" />
+                    <Variable name="tiger" timeSlice="0" />
+                    <Variable name="agent1" timeSlice="0" />
+                    <Variable name="agent2" timeSlice="0" />
+                    <Variable name="action_agent1" timeSlice="0" />
+                    <Variable name="action_agent2" timeSlice="0" />
+                </Variables>
+                <Values>
+                1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.0 1.0 1.0 0.0 0.0 1.0 0.5 0.5 0.5 0.5
+                </Values>
+            </Potential>
+
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                    <Variable name="obs_agent1" timeSlice="1" />
+                    <Variable name="tiger" timeSlice="1" />
+                    <Variable name="agent1" timeSlice="1" />
+                    <Variable name="action_agent1" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_agent1" timeSlice="0" />
+                <Branches>
+                    <Branch>
+                        <States>
+                            <State name="listen_agent1" />
+                        </States>
+                        <Potential type="Tree/ADD" role="conditionalProbability">
+                            <Variables>
+                                <Variable name="obs_agent1" timeSlice="1" />
+                                <Variable name="tiger" timeSlice="1" />
+                                <Variable name="agent1" timeSlice="1" />
+                            </Variables>
+                            <TopVariable name="agent1" timeSlice="1" />
+                            <Branches>
+                                <Branch>
+                                    <States>
+                                        <State name="0" />
+                                    </States>
+                                    <Potential type="Tree/ADD" role="conditionalProbability">
+                                        <Variables>
+                                            <Variable name="obs_agent1" timeSlice="1" />
+                                            <Variable name="tiger" timeSlice="1" />
+                                        </Variables>
+                                        <TopVariable name="tiger" timeSlice="1" />
+                                        <Branches>
+                                            <Branch>
+                                                <States>
+                                                    <State name="0" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent1" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.85 0.15 0.0 </Values>
+                                                </Potential>
+                                            </Branch>
+                                            <Branch>
+                                                <States>
+                                                   <State name="1" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent1" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.15 0.85 0.0 </Values>
+                                               </Potential>
+                                            </Branch>
+                                        </Branches>
+                                    </Potential>
+                                </Branch>
+                                <Branch>
+                                    <States>
+                                        <State name="1" />
+                                    </States>
+                                    <Potential type="Tree/ADD" role="conditionalProbability">
+                                        <Variables>
+                                            <Variable name="obs_agent1" timeSlice="1" />
+                                            <Variable name="tiger" timeSlice="1" />
+                                        </Variables>
+                                        <TopVariable name="tiger" timeSlice="1" />
+                                        <Branches>
+                                            <Branch>
+                                                <States>
+                                                    <State name="1" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent1" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.85 0.15 0.0 </Values>
+                                                </Potential>
+                                            </Branch>
+                                            <Branch>
+                                                <States>
+                                                   <State name="0" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent1" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.15 0.85 0.0 </Values>
+                                               </Potential>
+                                            </Branch>
+                                        </Branches>
+                                    </Potential>
+                                </Branch>
+                            </Branches>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="idle" />
+                            <State name="move_left_agent1" />
+                            <State name="move_right_agent1" />
+                            <State name="open_agent1" />
+                            <State name="copen_agent1_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="obs_agent1" timeSlice="1" />
+                            </Variables>
+                            <Values> 0.0 0.0 1.0  </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+            <Potential type="Tree/ADD" role="conditionalProbability">
+                <Variables>
+                    <Variable name="obs_agent2" timeSlice="1" />
+                    <Variable name="tiger" timeSlice="1" />
+                    <Variable name="agent2" timeSlice="1" />
+                    <Variable name="action_agent2" timeSlice="0" />
+                </Variables>
+                <TopVariable name="action_agent2" timeSlice="0" />
+                <Branches>
+                    <Branch>
+                        <States>
+                            <State name="listen_agent2" />
+                        </States>
+                        <Potential type="Tree/ADD" role="conditionalProbability">
+                            <Variables>
+                                <Variable name="obs_agent2" timeSlice="1" />
+                                <Variable name="tiger" timeSlice="1" />
+                                <Variable name="agent2" timeSlice="1" />
+                            </Variables>
+                            <TopVariable name="agent2" timeSlice="1" />
+                            <Branches>
+                                <Branch>
+                                    <States>
+                                        <State name="0" />
+                                    </States>
+                                    <Potential type="Tree/ADD" role="conditionalProbability">
+                                        <Variables>
+                                            <Variable name="obs_agent2" timeSlice="1" />
+                                            <Variable name="tiger" timeSlice="1" />
+                                        </Variables>
+                                        <TopVariable name="tiger" timeSlice="1" />
+                                        <Branches>
+                                            <Branch>
+                                                <States>
+                                                    <State name="0" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent2" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.85 0.15 0.0 </Values>
+                                                </Potential>
+                                            </Branch>
+                                            <Branch>
+                                                <States>
+                                                   <State name="1" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent2" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.15 0.85 0.0 </Values>
+                                               </Potential>
+                                            </Branch>
+                                        </Branches>
+                                    </Potential>
+                                </Branch>
+                                <Branch>
+                                    <States>
+                                        <State name="1" />
+                                    </States>
+                                    <Potential type="Tree/ADD" role="conditionalProbability">
+                                        <Variables>
+                                            <Variable name="obs_agent2" timeSlice="1" />
+                                            <Variable name="tiger" timeSlice="1" />
+                                        </Variables>
+                                        <TopVariable name="tiger" timeSlice="1" />
+                                        <Branches>
+                                            <Branch>
+                                                <States>
+                                                    <State name="1" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent2" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.85 0.15 0.0 </Values>
+                                                </Potential>
+                                            </Branch>
+                                            <Branch>
+                                                <States>
+                                                   <State name="0" />
+                                                </States>
+                                                <Potential type="Table">
+                                                    <Variables>
+                                                        <Variable name="obs_agent2" timeSlice="1" />
+                                                    </Variables>
+                                                    <Values> 0.15 0.85 0.0 </Values>
+                                               </Potential>
+                                            </Branch>
+                                        </Branches>
+                                    </Potential>
+                                </Branch>
+                            </Branches>
+                        </Potential>
+                    </Branch>
+                    <Branch>
+                        <States>
+                            <State name="idle" />
+                            <State name="move_left_agent2" />
+                            <State name="move_right_agent2" />
+                            <State name="open_agent2" />
+                            <State name="copen_agent1_agent2" />
+                        </States>
+                        <Potential type="Table">
+                            <Variables>
+                                <Variable name="obs_agent2" timeSlice="1" />
+                            </Variables>
+                            <Values> 0.0 0.0 1.0  </Values>
+                        </Potential>
+                    </Branch>
+                </Branches>
+            </Potential>
+
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="cost_agent1" timeSlice="0" />
+                <Variables>
+                    <Variable name="action_agent1" timeSlice="0" />
+                </Variables>
+                <Values> 0  -0.01  -0.01  -1  -0.01  -0.01 </Values>
+            </Potential>
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="cost_agent2" timeSlice="0" />
+                <Variables>
+                    <Variable name="action_agent2" timeSlice="0" />
+                </Variables>
+                <Values> 0  -0.01  -0.01  -1  -0.01  -0.01 </Values>
+            </Potential>
+
+            <Potential type="Table" role="utility">
+                <UtilityVariable name="reward_tiger" timeSlice="0" />
+                <Variables>
+                    <Variable name="tiger" timeSlice="0"/>
+                    <Variable name="agent1" timeSlice="0"/>
+                    <Variable name="agent2" timeSlice="0"/>
+                    <Variable name="action_agent1" timeSlice="0"/>
+                    <Variable name="action_agent2" timeSlice="0"/>
+                </Variables>
+                <Values> 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 10.0 -100.0 -100.0 10.0 10.0 -100.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 10.0 -100.0 -100.0 10.0 10.0 -100.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 10.0 -100.0 -100.0 10.0 10.0 -100.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 10.0 -100.0 -100.0 10.0 10.0 -100.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 -100.0 10.0 10.0 -100.0 10.0 -100.0 -100.0 10.0 -100.0 10.0 10.0 -100.0 10.0 -100.0 -100.0 10.0 -100.0 10.0 10.0 -100.0 10.0 -100.0 -100.0 10.0 -100.0 10.0 10.0 -100.0 10.0 -100.0 -200.0 20.0 -90.0 -90.0 -90.0 -90.0 20.0 -200.0 -100.0 10.0 -100.0 10.0 10.0 -100.0 10.0 -100.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 -100.0 10.0 10.0 -100.0 -100.0 10.0 10.0 -100.0 -50.0 20.0 0.0 0.0 0.0 0.0 20.0 -50.0 </Values>
+            </Potential>
+        </Potentials>
+    </ProbNet>
+</ProbModelXML>

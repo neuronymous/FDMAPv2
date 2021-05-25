@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="BoxPushing"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A simple box pushing domain. 2x2 grid, 2 agents, 2 boxes, 1 heavy.
+      Heavy boxes are  b1       Target tiles are         </Description>
+      <Discount> 0.95 </Discount>
+      <Variable>
+
+         <StateVar fullyObs="false" vnameCurr="a1_1" vnamePrev="a1_0">
+            <ValueEnum> 0 1 2 3 </ValueEnum>
+         </StateVar>
+         <StateVar fullyObs="false" vnameCurr="b2_1" vnamePrev="b2_0">
+            <ValueEnum> 0 1 2 3 </ValueEnum>
+         </StateVar>
+
+         <ObsVar vname="o_a1_b2">
+            <ValueEnum>yes no null</ValueEnum>
+         </ObsVar>
+         <ActionVar vname="action_agent">
+            <ValueEnum>amu_a1 amr_a1 amd_a1 aml_a1 apu_b2_a1 apr_b2_a1 apd_b2_a1 apl_b2_a1 as_b2_a1 aidle_a1</ValueEnum>
+         </ActionVar>
+
+         <RewardVar vname="reward_b2" />
+
+         <RewardVar vname="cost_a1" />
+         </Variable>
+
+      <InitialStateBelief>
+
+         <CondProb>
+            <Var>a1_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> - </Instance>
+                    <ProbTable> uniform </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>b2_0</Var>
+            <Parent>null</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance> 1 </Instance>
+                    <ProbTable> 0.33 </ProbTable>
+                </Entry>
+                <Entry>
+                    <Instance> 2 </Instance>
+                    <ProbTable> 0.67 </ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         <CondProb>
+            <Var>a1_1</Var>
+            <Parent>action_agent a1_0</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance>* - -</Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>aml_a1 - -</Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+0.80	0.20	0.00	0.00
+0.00	0.00	1.00	0.00
+0.00	0.00	0.80	0.20
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>amr_a1 - -</Instance>
+                     <ProbTable>
+                     0.20	0.80	0.00	0.00
+0.00	1.00	0.00	0.00
+0.00	0.00	0.20	0.80
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>amu_a1 - -</Instance>
+                     <ProbTable>
+                     1.00	0.00	0.00	0.00
+0.00	1.00	0.00	0.00
+0.80	0.00	0.20	0.00
+0.00	0.80	0.00	0.20
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>amd_a1 - -</Instance>
+                     <ProbTable>
+                     0.20	0.00	0.80	0.00
+0.00	0.20	0.00	0.80
+0.00	0.00	1.00	0.00
+0.00	0.00	0.00	1.00
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         <CondProb>
+            <Var>b2_1</Var>
+            <Parent>action_agent a1_0 b2_0</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                     <Instance>* * - -</Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apd_b2_a1 0 0 -</Instance>
+                     <ProbTable>
+                     0.2 0.0 0.8 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apr_b2_a1 0 0 -</Instance>
+                     <ProbTable>
+                     0.2 0.8 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apu_b2_a1 2 2 -</Instance>
+                     <ProbTable>
+                     0.8 0.0 0.2 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apr_b2_a1 2 2 -</Instance>
+                     <ProbTable>
+                     0.0 0.0 0.2 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apd_b2_a1 1 1 -</Instance>
+                     <ProbTable>
+                     0.0 0.2 0.0 0.8
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apl_b2_a1 1 1 -</Instance>
+                     <ProbTable>
+                     0.8 0.2 0.0 0.0
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apu_b2_a1 3 3 -</Instance>
+                     <ProbTable>
+                     0.0 0.8 0.0 0.2
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance>apl_b2_a1 3 3 -</Instance>
+                     <ProbTable>
+                     0.0 0.0 0.8 0.2
+                     </ProbTable>
+               </Entry>
+               </Parameter>
+         </CondProb>
+      </StateTransitionFunction>
+
+      <ObsFunction>
+         <CondProb>
+            <Var> o_a1_b2 </Var>
+            <Parent> action_agent a1_1 b2_1 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * * null </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 * * no </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 * * null </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 0 0 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 0 0 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 1 1 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 1 1 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 2 2 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 2 2 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 3 3 yes </Instance>
+                  <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 3 3 no </Instance>
+                  <ProbTable> 0.0 </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         </ObsFunction>
+      <RewardFunction>
+         <Func>
+
+            <Var> cost_a1 </Var>
+            <Parent> action_agent </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> aidle_a1 </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> aml_a1 </Instance>
+                  <ValueTable> -5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> amr_a1 </Instance>
+                  <ValueTable> -5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> amu_a1 </Instance>
+                  <ValueTable> -5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> amd_a1 </Instance>
+                  <ValueTable> -5 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> apl_b2_a1 </Instance>
+                  <ValueTable> -7 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> apr_b2_a1 </Instance>
+                  <ValueTable> -7 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> apu_b2_a1 </Instance>
+                  <ValueTable> -7 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> apd_b2_a1 </Instance>
+                  <ValueTable> -7 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> as_b2_a1 </Instance>
+                  <ValueTable> -1 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+         <Func>
+            <Var> reward_b2 </Var>
+            <Parent> b2_0 b2_1 </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> - 0 </Instance>
+                  <ValueTable> 0 500 500 500 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> 0 - </Instance>
+                  <ValueTable> 0 -10000 -10000 -10000 </ValueTable>
+               </Entry>
+            </Parameter>
+         </Func>
+      </RewardFunction>
+</pomdpx>

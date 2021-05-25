@@ -1,0 +1,36 @@
+
+Loading the model ...
+  input file   : /home/eliranab/FDMAP/Resources/problems/BP-3x1_2A_1H_1L_TEAM.pomdpx
+
+Loading the policy ...
+  input file   : /home/eliranab/FDMAP/Resources/policies/BP-3x1_2A_1H_1L_TEAM.policy
+
+Simulating ...
+  action selection :  one-step look ahead
+
+-----------------------------------
+ #Simulations  | Exp Total Reward  
+-----------------------------------
+ 10              1031.35
+ 20              869.518
+ 30              885.606
+ 40              863.327
+ 50              843.671
+ 60              918.364
+ 70              860.255
+ 80              823.821
+ 90              802.709
+ 100             783.168
+-----------------------------------
+
+Finishing ...
+
+-------------------------------------------------------------
+ #Simulations  | Exp Total Reward | 95% Confidence Interval 
+-------------------------------------------------------------
+ 100             783.168            (632.506, 933.831)
+-------------------------------------------------------------
+Simulation took 
+real	0m1.583s
+user	0m1.533s
+sys	0m0.048s 3131341511581881

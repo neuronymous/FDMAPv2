@@ -1,0 +1,27 @@
+input file   : /home/eliranab/FDMAP/Resources/problems/DT-2x1_2A_agent2.pomdpx
+Use one-step look ahead
+discount : 0.99
+initialBeliefY : 
+size: 8,
+ data: [2= 0.5, 3= 0.5]
+initialBeliefStval : 
+initialBeliefStval stval: 0
+size: 8,
+ data: [2= 0.5, 3= 0.5]
+initialBeliefX : 
+1
+1 
+Num X States : 1
+Num Y States : 8
+Num Action : 7
+Num Observations : 3
+X Trans : Object at 0x154a610
+Y Trans : Object at 0x15421d0
+Obs Prob : Object at 0x15495e0
+Rewards : Object at 0x154c0e0
+
+NOT In special case for initial X is a distribtion
+Graph generation took 
+real	0m0.005s
+user	0m0.002s
+sys	0m0.002s

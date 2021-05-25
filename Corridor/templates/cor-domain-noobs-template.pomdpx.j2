@@ -1,0 +1,166 @@
+{% set ACTION_LIST = calculate_action_list(NUM_AGENTS) %}
+{% set POS_VALUES = range(0, CORRIDOR_LENGTH)|list %}
+{% set BUTTON_POS = POS_VALUES[-1] %}
+{% set POMDPXMARKS = pomdpx_constants %}
+{% set CORCONSTANTS = corridor_constants %}
+{% set MOVE_MATRIX = calculate_move_matrix(CORRIDOR_LENGTH,PROB_MOVE) %}
+{% set AGENTS_IDX_PAIRS = calculate_pairs(NUM_AGENTS) %}
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<pomdpx version="0.1" id="RockSampling"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="pomdpx.xsd">
+      <Description>
+      A corridor domain. Corridor of length {{CORRIDOR_LENGTH}}, {{NUM_AGENTS}} agents.
+      </Description>
+      <Discount> {{DISCOUNT}} </Discount>
+      <NumAgents> {{NUM_AGENTS}} </NumAgents>
+      <Variable>
+         {% for i in range(NUM_AGENTS) %}
+         <StateVar vnamePrev="{{ time_zero(AGENTS_SYMBOLS[i]) }}" vnameCurr="{{ time_one(AGENTS_SYMBOLS[i]) }}" fullyObs="false">
+            <ValueEnum> {{ POS_VALUES|join(' ') }} </ValueEnum>
+         </StateVar>
+         {% endfor %}
+
+         <StateVar vnamePrev="{{ time_zero(CORCONSTANTS.button_symbol()) }}" vnameCurr="{{ time_one(CORCONSTANTS.button_symbol()) }}" fullyObs="false">
+            <ValueEnum> {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_on() }} {{ CORCONSTANTS.button_fail() }} </ValueEnum>
+         </StateVar>
+
+         <ActionVar vname="{{ CORCONSTANTS.action_var() }}">
+            <ValueEnum> {{ ACTION_LIST|join(' ') }} </ValueEnum>
+         </ActionVar>
+
+         {% for i in range(NUM_AGENTS) %}
+         <RewardVar vname="{{ CORCONSTANTS.agent_cost_var(i) }}"/>
+         {% endfor %}
+         <RewardVar vname="{{ CORCONSTANTS.button_reward_var() }}"/>
+
+      </Variable>
+      <InitialStateBelief>
+
+         {% for i in range(NUM_AGENTS) %}
+         <CondProb>
+            <Var>{{ time_zero(AGENTS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ POMDPXMARKS.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                {% for tile_idx, prob in AGENTS_POSITIONS[i].items() %}
+                <Entry>
+                    <Instance>{{ tile_idx }}</Instance>
+                    <ProbTable>{{ prob }}</ProbTable>
+                </Entry>
+                {% endfor %}
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         <CondProb>
+            <Var>{{ time_zero(CORCONSTANTS.button_symbol()) }}</Var>
+            <Parent>{{ POMDPXMARKS.NULL_PARENT }}</Parent>
+            <Parameter type="TBL">
+                <Entry>
+                    <Instance>{{ CORCONSTANTS.button_off() }}</Instance>
+                    <ProbTable>1.0</ProbTable>
+                </Entry>
+            </Parameter>
+         </CondProb>
+
+      </InitialStateBelief>
+
+      <StateTransitionFunction>
+         {% for i in range(NUM_AGENTS) %}
+         <CondProb>
+            <Var>{{ time_one(AGENTS_SYMBOLS[i]) }}</Var>
+            <Parent>{{ CORCONSTANTS.action_var() }} {{ time_zero(AGENTS_SYMBOLS[i]) }}</Parent>
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> {{ CORCONSTANTS.move_action(i) }} - - </Instance>
+                     <ProbTable>
+                     {{ matrix_to_string(MOVE_MATRIX) }}
+                     </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+         {% for agents_idx in AGENTS_IDX_PAIRS %}
+         <CondProb>
+            <Var>{{ time_one(CORCONSTANTS.button_symbol()) }}</Var>
+            <Parent>{{ CORCONSTANTS.action_var() }}{% for agent_idx in agents_idx %} {{ time_zero(CORCONSTANTS.agent_symbol(agent_idx)) }} {% endfor -%}{{ time_zero(CORCONSTANTS.button_symbol()) }}</Parent>
+            {% set agents_any_pos = create_combination_template(agents_idx|length) %}
+            {% set agents_button_pos = cast_to_template(create_combination_template(agents_idx|length, *(range(agents_idx|length))), BUTTON_POS|string) %}
+            <Parameter type="TBL">
+               <Entry>
+                     <Instance> * {{ agents_any_pos }} - - </Instance>
+                     <ProbTable>
+                     identity
+                     </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> {{ CORCONSTANTS.click_action(*agents_idx) }} {{ agents_any_pos }} {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_fail() }}</Instance>
+                     <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> {{ CORCONSTANTS.click_action(*agents_idx) }} {{ agents_any_pos }} {{ CORCONSTANTS.button_off() }} {{  CORCONSTANTS.button_off() }}</Instance>
+                     <ProbTable> 0.0 </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> {{ CORCONSTANTS.click_action(*agents_idx) }} {{ agents_button_pos }} {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_on() }}</Instance>
+                     <ProbTable> 1.0 </ProbTable>
+               </Entry>
+               <Entry>
+                     <Instance> {{ CORCONSTANTS.click_action(*agents_idx) }} {{ agents_button_pos }} {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_fail() }}</Instance>
+                     <ProbTable> 0.0 </ProbTable>
+               </Entry>
+            </Parameter>
+         </CondProb>
+         {% endfor %}
+
+      </StateTransitionFunction>
+
+      <RewardFunction>
+        {% for i in range(NUM_AGENTS) %}
+        {% set cur_agent_bias = AGENTS_BIAS[i] %}
+         <Func>
+            <Var> {{ CORCONSTANTS.agent_cost_var(i) }} </Var>
+            <Parent> {{ CORCONSTANTS.action_var() }} </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * </Instance>
+                  <ValueTable> {{ CLICK_COST }} </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ CORCONSTANTS.idle_action() }} </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ CORCONSTANTS.move_action(i) }} </Instance>
+                  <ValueTable> {{ MOVE_COST - cur_agent_bias }} </ValueTable>
+               </Entry>
+               </Parameter>
+         </Func>
+         {% endfor %}
+         <Func>
+            <Var> {{ CORCONSTANTS.button_reward_var() }} </Var>
+            <Parent> {{ time_zero(CORCONSTANTS.button_symbol()) }} {{ time_one(CORCONSTANTS.button_symbol()) }} </Parent>
+            <Parameter type="TBL">
+               <Entry>
+                  <Instance> * * </Instance>
+                  <ValueTable> 0 </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_on() }} </Instance>
+                  <ValueTable> {{ GOOD_CLICK_REWARD }} </ValueTable>
+               </Entry>
+               <Entry>
+                  <Instance> {{ CORCONSTANTS.button_off() }} {{ CORCONSTANTS.button_fail() }} </Instance>
+                  <ValueTable> {{ BAD_CLICK_PENALTY }} </ValueTable>
+               </Entry>
+             </Parameter>
+         </Func>
+      </RewardFunction>
+</pomdpx>

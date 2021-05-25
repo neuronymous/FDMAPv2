@@ -1,0 +1,63 @@
+
+Loading the model ...
+  input file   : /home/eliranab/FDMAP/Resources/problems/BPPEN-3x1_2A_1H_1L_TEAM_agent1.pomdpx
+  loading time : 0.01s 
+
+SARSOP initializing ...
+In sarsop::initialize
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.8.1
+0.8.2
+0.8.3
+0.8.4
+0.8.5
+0.8.6
+0.9
+0.10
+Finished sarsop::initialize
+1
+2
+3
+4
+5
+6
+  initialization time : 0.01s
+
+-------------------------------------------------------------------------------
+ Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs  
+-------------------------------------------------------------------------------
+ 0.01    0       0        0          1194.2     1194.2      14       1        
+ 0.01    1       55       739.843    1181.26    441.414     36       18       
+ 0.01    2       100      985.35     1181.26    195.906     66       33       
+ 0.01    4       150      1056.39    1174.41    118.018     91       46       
+ 0.02    6       200      1093.68    1173.13    79.4507     128      55       
+ 0.02    10      257      1118.04    1167.61    49.569      157      61       
+ 0.02    14      300      1127.07    1161.57    34.4917     172      70       
+ 0.03    16      337      1136.17    1161.46    25.2879     194      70       
+-------------------------------------------------------------------------------
+
+SARSOP finishing ...
+  target precision reached
+  target precision  : 30.000000
+  precision reached : 25.287850 
+
+-------------------------------------------------------------------------------
+ Time   |#Trial |#Backup |LBound    |UBound    |Precision  |#Alphas |#Beliefs  
+-------------------------------------------------------------------------------
+ 0.03    16      337      1136.17    1161.46    25.2879     194      70       
+-------------------------------------------------------------------------------
+
+Writing out policy ...
+  output file : /home/eliranab/FDMAP/Resources/policies/BPPEN-3x1_2A_1H_1L_TEAM_agent1.policy
+
+Solve took 
+real	0m0.058s
+user	0m0.053s
+sys	0m0.005s
